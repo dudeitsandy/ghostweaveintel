@@ -11,6 +11,7 @@
 <style>
 :root{--green-900:#0f2d0a;--green-800:#1a4710;--green-700:#236014;--green-600:#2e7a19;--green-500:#3b9620;--green-400:#52b034;--green-300:#7ecc60;--green-200:#b3e496;--green-100:#e0f5d0;--green-50:#f3fbed;--stone-950:#0c0e0b;--stone-900:#141710;--stone-800:#1e2318;--stone-700:#2b3022;--stone-600:#3d4534;--stone-500:#586050;--stone-400:#7a8470;--stone-300:#a4ae99;--stone-200:#cdd5c5;--stone-100:#e8ede3;--stone-50:#f5f7f2;--amber:#c87d1a;--amber-light:#fef3dc;--red:#b83030;--red-light:#fdeaea;--blue:#1c5fa8;--blue-light:#e8f1fc;--sidebar-w:220px;--header-h:56px}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+button,a,[role=button]{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 body{font-family:'Lato',sans-serif;font-size:14px;background:var(--stone-50);color:var(--stone-900);min-height:100vh;display:flex;flex-direction:column}
 .app-header{position:fixed;top:0;left:0;right:0;height:var(--header-h);background:var(--stone-900);display:flex;align-items:center;padding:0 20px 0 0;z-index:100;border-bottom:1px solid var(--stone-800)}
 .logo-block{width:var(--sidebar-w);display:flex;align-items:center;gap:10px;padding:0 20px;flex-shrink:0}
@@ -124,12 +125,15 @@ tbody tr:hover{background:var(--stone-50)}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--stone-200);border-radius:3px}
 /* ── Mobile nav ──────────────────────────────────────────────────────────── */
-/* Hamburger: visible by default, hidden on wide screens */
 .hamburger{display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;padding:6px 10px;color:var(--stone-300);flex-shrink:0;line-height:1}
 .hamburger:hover{color:#fff}
 .hamburger svg{width:22px;height:22px;display:block}
 .sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:89}
 .sidebar-backdrop.open{display:block}
+/* Mobile search toggle */
+.search-toggle{display:none;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;padding:6px 8px;color:var(--stone-300);flex-shrink:0}
+.search-toggle svg{width:18px;height:18px}
+.header-search-wrap{display:flex;align-items:center;position:relative;flex:1}
 
 /* Hide hamburger on desktop */
 @media(min-width:901px){
@@ -140,7 +144,7 @@ tbody tr:hover{background:var(--stone-50)}
 @media(max-width:900px){
   .metrics-row{grid-template-columns:repeat(2,1fr)}
   .two-col,.three-col{grid-template-columns:1fr}
-  .logo-block{width:auto;padding:0 10px 0 0}
+  .logo-block{width:auto;padding:0 8px 0 0}
   .app-sidebar{transform:translateX(-100%);transition:transform .22s ease;z-index:91}
   .app-sidebar.mobile-open{transform:translateX(0)}
   .app-main{margin-left:0}
@@ -156,23 +160,39 @@ tbody tr:hover{background:var(--stone-50)}
   .check-list{max-height:200px}
   .stat-cluster{gap:14px}
   .action-item{padding:9px 10px}
+  /* Bigger touch targets on table rows */
+  tbody td{padding:12px 10px 12px 0}
+  /* Calendar scrollable on tablet */
+  .calendar-grid{overflow-x:auto}
 }
 
 @media(max-width:600px){
-  .header-search{width:140px}
+  .header-search{width:130px}
   .header-badge{display:none}
   .two-col,.three-col{grid-template-columns:1fr}
   .metrics-row{grid-template-columns:repeat(2,1fr)}
 }
 
 @media(max-width:480px){
-  .metrics-row{grid-template-columns:1fr}
+  .metrics-row{grid-template-columns:repeat(2,1fr)}
   #brand-health-grid{grid-template-columns:1fr!important}
-  .header-search{width:100px}
+  /* Compact header: hide search input, show icon toggle */
+  .header-search{display:none}
+  .header-search.expanded{display:block;position:fixed;top:var(--header-h);left:0;right:0;width:100%;border-radius:0;border-left:none;border-right:none;border-top:none;z-index:200;padding:10px 16px;font-size:14px}
+  #search-results{position:fixed;top:calc(var(--header-h) + 42px);left:0;width:100vw;border-radius:0 0 8px 8px;z-index:200}
+  .search-toggle{display:flex}
+  .header-center{flex:0;padding:0 4px}
   .page-title{font-size:18px}
   .metric-val{font-size:22px}
-  #search-results{width:calc(100vw - 28px);left:0}
   .card-title{font-size:11px}
+  /* Promo calendar: horizontal scroll on small phones */
+  .calendar-grid{display:block;overflow-x:auto;white-space:nowrap}
+  .calendar-grid > *{display:inline-block;vertical-align:top;min-width:48px;white-space:normal}
+  .cal-day{min-height:56px}
+  /* Rep avatar label truncation */
+  .logo-name{font-size:14px}
+  /* Units/Rev toggle compact */
+  #units-rev-toggle{font-size:10px;padding:3px 7px}
 }
 
 /* ── Strategy Intel ──────────────────────────────────────────────────────── */
@@ -216,10 +236,118 @@ input[type=checkbox]{accent-color:var(--green-600);width:13px;height:13px;flex-s
 @media print{.app-header,.app-sidebar,#gw-tip,#gw-toast,.modal-overlay,.drawer,.drawer-overlay,.filter-row,.btn{display:none!important}.app-main{margin:0!important}.page{display:none!important}.page.active{display:block!important}body{background:#fff!important}}
 /* ── Tooltip ─────────────────────────────────────────────────────────────── */
 #gw-tip{position:fixed;background:var(--stone-900);color:#fff;font-size:11px;line-height:1.55;padding:7px 11px;border-radius:7px;z-index:9999;pointer-events:none;max-width:230px;display:none;box-shadow:0 4px 14px rgba(0,0,0,.35);border:1px solid var(--stone-700)}
+/* ── Excise stamp scanner ────────────────────────────────────────────────── */
+.scan-section{background:var(--stone-50);border:1px solid var(--stone-200);border-radius:12px;padding:16px;margin-bottom:16px}
+.scan-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--stone-900);color:#fff;border:none;border-radius:10px;padding:16px;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .15s}
+.scan-btn:active{opacity:.8}
+.scan-btn-icon{width:32px;height:32px;background:var(--green-600);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.scan-hint{text-align:center;font-size:11px;color:var(--stone-400);margin-top:8px}
+/* Scanning animation */
+.scan-scanning{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 0}
+.scan-spinner{width:48px;height:48px;border-radius:50%;border:3px solid var(--stone-200);border-top-color:var(--green-500);animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.scan-scanning-line{width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--green-400),transparent);animation:scanline 1s ease-in-out infinite}
+@keyframes scanline{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
+.scan-label{font-size:12px;color:var(--stone-500);font-family:'DM Mono',monospace}
+/* Success state */
+.scan-success{background:var(--green-50);border:1.5px solid var(--green-300);border-radius:10px;padding:12px 14px}
+.scan-success-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.scan-success-check{width:24px;height:24px;border-radius:50%;background:var(--green-500);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0}
+.scan-success-code{font-family:'DM Mono',monospace;font-size:14px;font-weight:700;color:var(--green-700);flex:1}
+.scan-rescan{background:none;border:1px solid var(--green-300);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;color:var(--green-700);cursor:pointer;font-family:'Syne',sans-serif}
+.scan-success-detail{font-size:12px;color:var(--stone-600);line-height:1.6}
+.scan-divider{display:flex;align-items:center;gap:8px;margin:14px 0 2px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--stone-400)}
+.scan-divider::before,.scan-divider::after{content:'';flex:1;height:1px;background:var(--stone-200)}
+/* Viewfinder */
+.viewfinder-wrap{position:relative;border-radius:10px;overflow:hidden;background:#000;aspect-ratio:4/3;max-height:280px}
+.viewfinder-wrap video{width:100%;height:100%;object-fit:cover;display:block}
+.viewfinder-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.viewfinder-target{width:220px;height:72px;border-radius:6px;border:2.5px solid rgba(255,255,255,.9);box-shadow:0 0 0 2000px rgba(0,0,0,.45)}
+.viewfinder-scanline{position:absolute;left:50%;transform:translateX(-50%);width:200px;height:2px;background:linear-gradient(90deg,transparent,var(--green-400),transparent);animation:vfscanline 1.4s ease-in-out infinite}
+@keyframes vfscanline{0%,100%{top:calc(50% - 28px)}50%{top:calc(50% + 28px)}}
+.viewfinder-hint{text-align:center;font-size:12px;color:var(--stone-500);margin:8px 0 4px}
+.viewfinder-cancel{display:block;width:100%;background:none;border:1px solid var(--stone-200);border-radius:8px;padding:9px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--stone-500);cursor:pointer;margin-top:6px}
+/* Desktop: collapse scan section to a note */
+@media(min-width:901px){
+  .scan-section{background:none;border:none;padding:0;margin-bottom:8px}
+  .scan-mobile-only{display:none}
+  .scan-desktop-note{display:flex!important}
+}
+.scan-desktop-note{display:none;align-items:center;gap:8px;font-size:12px;color:var(--stone-400);padding:4px 0 10px;border-bottom:1px solid var(--stone-100);margin-bottom:4px}
 /* ── Notes ───────────────────────────────────────────────────────────────── */
 .note-area{width:100%;border:1px solid var(--stone-200);border-radius:6px;padding:9px 11px;font-size:12px;font-family:'Lato',sans-serif;color:var(--stone-800);resize:vertical;min-height:72px;outline:none;background:var(--stone-50);transition:border .15s}
 .note-area:focus{border-color:var(--green-400);background:#fff}
 .note-saved{font-size:11px;color:var(--green-600);margin-top:4px;display:none}
+/* ── Bottom nav (mobile only) ────────────────────────────────────────────── */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:calc(60px + env(safe-area-inset-bottom));background:var(--stone-900);border-top:1px solid var(--stone-800);z-index:95;padding-bottom:env(safe-area-inset-bottom);align-items:stretch}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;color:var(--stone-500);font-size:10px;font-weight:700;font-family:'Syne',sans-serif;letter-spacing:.3px;padding:6px 2px;transition:color .12s;-webkit-tap-highlight-color:transparent}
+.bnav-item svg{width:22px;height:22px;flex-shrink:0}
+.bnav-item.active{color:var(--green-300)}
+.bnav-item:active{opacity:.7}
+/* Capture FAB-style center button */
+.bnav-item.bnav-capture{color:#fff}
+.bnav-item.bnav-capture .bnav-capture-circle{width:48px;height:48px;border-radius:50%;background:var(--green-600);display:flex;align-items:center;justify-content:center;margin-top:-20px;box-shadow:0 4px 16px rgba(59,150,32,.5);margin-bottom:2px}
+.bnav-item.bnav-capture .bnav-capture-circle svg{width:24px;height:24px}
+.bnav-item.bnav-capture.active .bnav-capture-circle{background:var(--green-500)}
+@media(max-width:900px){
+  .bottom-nav{display:flex}
+  .app-main{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+}
+/* ── Today page ──────────────────────────────────────────────────────────── */
+.today-greeting{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--stone-900);margin-bottom:2px}
+.today-sub{font-size:13px;color:var(--stone-400);margin-bottom:20px}
+.next-stop-card{background:var(--stone-900);border-radius:14px;padding:18px;margin-bottom:16px;color:#fff}
+.next-stop-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green-300);margin-bottom:8px}
+.next-stop-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:4px}
+.next-stop-address{font-size:12px;color:var(--stone-400);margin-bottom:12px}
+.next-stop-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.next-stop-pill{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:700;font-family:'DM Mono',monospace}
+.next-stop-actions{display:flex;gap:8px}
+.btn-checkin{flex:1;background:var(--green-500);color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.btn-brief{flex:0 0 auto;background:var(--stone-800);color:var(--stone-200);border:none;border-radius:10px;padding:13px 16px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.section-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--stone-500);text-transform:uppercase;letter-spacing:.5px}
+.section-link{font-size:12px;color:var(--green-600);font-weight:700;background:none;border:none;cursor:pointer;padding:0}
+/* Route strip */
+.route-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:20px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.route-strip::-webkit-scrollbar{display:none}
+.route-stop{flex:0 0 90px;background:#fff;border:1px solid var(--stone-100);border-radius:10px;padding:10px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.route-stop.is-next{border-color:var(--green-400);background:var(--green-50)}
+.route-stop-num{width:22px;height:22px;border-radius:50%;background:var(--stone-800);color:#fff;font-size:11px;font-weight:700;font-family:'Syne',sans-serif;display:flex;align-items:center;justify-content:center;margin:0 auto 5px}
+.route-stop.is-next .route-stop-num{background:var(--green-600)}
+.route-stop-name{font-size:11px;font-weight:700;color:var(--stone-800);line-height:1.3;margin-bottom:2px}
+.route-stop-city{font-size:10px;color:var(--stone-400)}
+/* Task cards */
+.task-card{background:#fff;border:1px solid var(--stone-100);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px}
+.task-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.task-title{font-size:13px;font-weight:700;color:var(--stone-900);margin-bottom:2px}
+.task-detail{font-size:11px;color:var(--stone-400);line-height:1.4}
+.task-action{margin-left:auto;flex-shrink:0;padding:5px 10px;border-radius:6px;background:var(--stone-100);border:none;cursor:pointer;font-size:11px;font-weight:700;color:var(--stone-600);font-family:'Syne',sans-serif;align-self:center}
+/* Activity feed */
+.activity-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--stone-50)}
+.activity-item:last-child{border-bottom:none}
+.activity-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;background:var(--stone-100)}
+.activity-text{font-size:12px;color:var(--stone-700);line-height:1.4}
+.activity-time{font-size:11px;color:var(--stone-400);margin-top:1px}
+/* ── Capture page ────────────────────────────────────────────────────────── */
+.capture-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.capture-card{background:#fff;border:1px solid var(--stone-100);border-radius:14px;padding:20px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .1s,box-shadow .1s;text-align:center}
+.capture-card:active{transform:scale(.97)}
+.capture-card.primary{background:var(--stone-900);border-color:var(--stone-900);grid-column:1/-1}
+.capture-card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:2px}
+.capture-card.primary .capture-card-icon{background:var(--green-600)}
+.capture-card-label{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--stone-800)}
+.capture-card.primary .capture-card-label{color:#fff;font-size:15px}
+.capture-card-sub{font-size:11px;color:var(--stone-400)}
+.capture-card.primary .capture-card-sub{color:var(--stone-400)}
+/* ── More page ───────────────────────────────────────────────────────────── */
+.more-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.more-card{background:#fff;border:1px solid var(--stone-100);border-radius:12px;padding:16px;display:flex;align-items:center;gap:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.more-card:active{background:var(--stone-50)}
+.more-card-icon{width:38px;height:38px;border-radius:9px;background:var(--stone-100);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.more-card-icon svg{width:18px;height:18px;color:var(--stone-600)}
+.more-card-label{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--stone-800)}
+.more-card-sub{font-size:11px;color:var(--stone-400);margin-top:1px}
 </style>
 </head>
 <body>
@@ -232,13 +360,16 @@ input[type=checkbox]{accent-color:var(--green-600);width:13px;height:13px;flex-s
     <img src="ghostweave_logo.png" alt="Ghostweave" style="height:30px;width:auto;object-fit:contain" onerror="this.style.display='none'" />
     <span class="logo-name">Ghostweave<span>Intel</span></span>
   </div>
+  <button class="search-toggle" id="search-toggle-btn" aria-label="Search">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5"/><line x1="13" y1="13" x2="18" y2="18"/></svg>
+  </button>
   <div class="header-center" style="position:relative">
     <input class="header-search" type="text" placeholder="Search brands, stores, contacts, SKUs…" id="globalSearch" autocomplete="off" />
     <div id="search-results" style="position:absolute;top:calc(100% + 6px);left:20px;width:340px;background:#fff;border-radius:8px;box-shadow:0 4px 24px rgba(0,0,0,.22);z-index:500;display:none;max-height:380px;overflow-y:auto;border:1px solid var(--stone-200)"></div>
   </div>
   <div class="header-right">
-    <button id="units-rev-toggle" onclick="toggleUnitMode()" data-tip="Toggle between Revenue ($) and Units (#) view across Dashboard, Brands, Stores, and Sales" style="background:var(--stone-700);border:1px solid var(--stone-600);color:var(--stone-200);font-size:11px;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:0.5px;transition:background .12s">$ REV</button>
-    <span class="header-badge">BC · v1.1</span>
+    <button id="units-rev-toggle" onclick="toggleUnitMode()" style="background:var(--stone-700);border:1px solid var(--stone-600);color:var(--stone-200);font-size:11px;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:0.5px;transition:background .12s;touch-action:manipulation;-webkit-tap-highlight-color:transparent">$ REV</button>
+    <span class="header-badge">BC · v1.2</span>
     <div class="rep-avatar">SM</div>
   </div>
 </header>
@@ -301,8 +432,34 @@ input[type=checkbox]{accent-color:var(--green-600);width:13px;height:13px;flex-s
       Promo Calendar
     </button>
   </div>
-  <div class="sidebar-footer">Ghostweave Intel · v1.1</div>
+  <div class="sidebar-footer">Ghostweave Intel · v1.2</div>
 </aside>
+
+<!-- ── Bottom nav (mobile only) ─────────────────────────────────────────── -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="bnav-item active" data-bnav="today">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Today
+  </button>
+  <button class="bnav-item" data-bnav="accounts">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Accounts
+  </button>
+  <button class="bnav-item bnav-capture" data-bnav="capture">
+    <div class="bnav-capture-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M9 3H5a2 2 0 00-2 2v4m0 6v4a2 2 0 002 2h4m6 0h4a2 2 0 002-2v-4m0-6V5a2 2 0 00-2-2h-4"/></svg>
+    </div>
+    Capture
+  </button>
+  <button class="bnav-item" data-bnav="visits">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    Visits
+  </button>
+  <button class="bnav-item" data-bnav="more">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="19" r="1" fill="currentColor"/></svg>
+    More
+  </button>
+</nav>
 
 <main class="app-main">
 
@@ -482,6 +639,123 @@ input[type=checkbox]{accent-color:var(--green-600);width:13px;height:13px;flex-s
     <div class="metrics-row" id="promo-metrics"></div>
     <div class="card"><div class="card-title">Upcoming &amp; Active Promotions</div><div class="table-wrap"><table><thead><tr><th>Promo</th><th>Brand</th><th>Type</th><th>Stores</th><th>Start</th><th>End</th><th>Budget</th><th>Expected Lift</th><th>Actual Lift</th><th>Status</th></tr></thead><tbody id="promos-tbody"></tbody></table></div></div>
     <div class="card"><div class="card-title">March 2026</div><div id="promo-calendar"></div></div>
+  </div>
+
+  <!-- TODAY (mobile home) ──────────────────────────────────────────────── -->
+  <div id="page-today" class="page">
+    <div id="today-greeting-block" style="margin-bottom:4px"></div>
+    <!-- Next stop -->
+    <div id="today-next-stop"></div>
+    <!-- Route strip -->
+    <div class="section-header">
+      <span class="section-title">Today's Route</span>
+      <button class="section-link" onclick="bnavGo('visits')">See All</button>
+    </div>
+    <div class="route-strip" id="today-route-strip"></div>
+    <!-- Priority tasks -->
+    <div class="section-header">
+      <span class="section-title">Priority Actions</span>
+      <button class="section-link" onclick="document.querySelector('[data-page=strategy]').click()">View All</button>
+    </div>
+    <div id="today-tasks"></div>
+    <!-- Activity -->
+    <div class="section-header" style="margin-top:4px">
+      <span class="section-title">Recent Activity</span>
+    </div>
+    <div class="card" style="padding:4px 14px"><div id="today-activity"></div></div>
+  </div>
+
+  <!-- CAPTURE ─────────────────────────────────────────────────────────── -->
+  <div id="page-capture" class="page">
+    <div class="page-header" style="margin-bottom:20px">
+      <div><div class="page-title">Capture</div><div class="page-sub">Log, scan, and record in the field</div></div>
+    </div>
+    <div class="capture-grid">
+      <div class="capture-card primary" onclick="openLogSample()">
+        <div class="capture-card-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M9 3H5a2 2 0 00-2 2v4m0 6v4a2 2 0 002 2h4m6 0h4a2 2 0 002-2v-4m0-6V5a2 2 0 00-2-2h-4"/></svg>
+        </div>
+        <div class="capture-card-label">Scan Excise Stamp</div>
+        <div class="capture-card-sub">Camera scan or manual entry</div>
+      </div>
+      <div class="capture-card" onclick="openLogVisit()">
+        <div class="capture-card-icon" style="background:var(--green-50)">📋</div>
+        <div class="capture-card-label">Log Visit</div>
+        <div class="capture-card-sub">Check in &amp; outcome</div>
+      </div>
+      <div class="capture-card" onclick="openLogSample()">
+        <div class="capture-card-icon" style="background:var(--blue-light)">📦</div>
+        <div class="capture-card-label">Log Sample</div>
+        <div class="capture-card-sub">Drop or receive</div>
+      </div>
+      <div class="capture-card" onclick="showToast('Photo capture coming soon')">
+        <div class="capture-card-icon" style="background:var(--amber-light)">📷</div>
+        <div class="capture-card-label">Take Photo</div>
+        <div class="capture-card-sub">Shelf, display, receipt</div>
+      </div>
+      <div class="capture-card" onclick="showToast('Voice notes coming soon')">
+        <div class="capture-card-icon" style="background:var(--red-light)">🎙</div>
+        <div class="capture-card-label">Voice Note</div>
+        <div class="capture-card-sub">Dictate visit notes</div>
+      </div>
+      <div class="capture-card" onclick="showToast('Follow-up scheduler coming soon')">
+        <div class="capture-card-icon" style="background:var(--stone-100)">📅</div>
+        <div class="capture-card-label">Schedule Follow-up</div>
+        <div class="capture-card-sub">Next visit or task</div>
+      </div>
+    </div>
+    <div class="section-header"><span class="section-title">Recent Captures</span></div>
+    <div class="card" style="padding:4px 14px"><div id="capture-recent"></div></div>
+  </div>
+
+  <!-- MORE ────────────────────────────────────────────────────────────── -->
+  <div id="page-more" class="page">
+    <div class="page-header" style="margin-bottom:20px">
+      <div><div class="page-title">More</div><div class="page-sub">All pages &amp; tools</div></div>
+    </div>
+    <div class="more-grid">
+      <div class="more-card" onclick="desktopNav('dashboard')">
+        <div class="more-card-icon"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg></div>
+        <div><div class="more-card-label">Dashboard</div><div class="more-card-sub">KPIs &amp; summary</div></div>
+      </div>
+      <div class="more-card" onclick="desktopNav('strategy')">
+        <div class="more-card-icon"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4z"/></svg></div>
+        <div><div class="more-card-label">Strategy Intel</div><div class="more-card-sub">Priorities &amp; alerts</div></div>
+      </div>
+      <div class="more-card" onclick="desktopNav('sales')">
+        <div class="more-card-icon"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 12l4-4 3 3 4-5 3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+        <div><div class="more-card-label">Sales &amp; Revenue</div><div class="more-card-sub">SKU velocity &amp; trends</div></div>
+      </div>
+      <div class="more-card" onclick="desktopNav('brands')">
+        <div class="more-card-icon"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="3"/></svg></div>
+        <div><div class="more-card-label">Brands</div><div class="more-card-sub">Brand performance</div></div>
+      </div>
+      <div class="more-card" onclick="desktopNav('contacts')">
+        <div class="more-card-icon"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>
+        <div><div class="more-card-label">Contacts</div><div class="more-card-sub">Budtenders &amp; buyers</div></div>
+      </div>
+      <div class="more-card" onclick="desktopNav('reps')">
+        <div class="more-card-icon"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M5 8a3 3 0 100-6 3 3 0 000 6z"/></svg></div>
+        <div><div class="more-card-label">Sales Reps</div><div class="more-card-sub">Territory &amp; rankings</div></div>
+      </div>
+      <div class="more-card" onclick="desktopNav('samples')">
+        <div class="more-card-icon"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="5" y="1" width="6" height="4" rx="1"/><path d="M4 5h8v9a1 1 0 01-1 1H5a1 1 0 01-1-1V5z"/></svg></div>
+        <div><div class="more-card-label">Samples &amp; ROV</div><div class="more-card-sub">Sample log &amp; ROV</div></div>
+      </div>
+      <div class="more-card" onclick="desktopNav('distribution')">
+        <div class="more-card-icon"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="2"/><circle cx="13" cy="4" r="2"/><circle cx="13" cy="12" r="2"/><path d="M5 7.2L11 5M5 8.8L11 11" stroke="currentColor" stroke-width="1" fill="none"/></svg></div>
+        <div><div class="more-card-label">Distribution</div><div class="more-card-sub">Brand × store matrix</div></div>
+      </div>
+      <div class="more-card" onclick="desktopNav('shelf')">
+        <div class="more-card-icon"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="3" rx="1"/><rect x="1" y="7" width="14" height="3" rx="1"/><rect x="1" y="12" width="14" height="3" rx="1"/></svg></div>
+        <div><div class="more-card-label">Shelf Share</div><div class="more-card-sub">Competitive analysis</div></div>
+      </div>
+      <div class="more-card" onclick="desktopNav('promo')">
+        <div class="more-card-icon"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="12" rx="1"/><path d="M4 1v4M12 1v4M1 7h14" stroke="currentColor" stroke-width="1.2" fill="none"/></svg></div>
+        <div><div class="more-card-label">Promo Calendar</div><div class="more-card-sub">Promotions &amp; lift</div></div>
+      </div>
+    </div>
+    <div style="margin-top:20px;text-align:center;font-size:11px;color:var(--stone-400);font-family:'DM Mono',monospace">Ghostweave Intel · v1.2 · BC</div>
   </div>
 
 </main>
@@ -728,6 +1002,9 @@ function noteSection(key) {
 // ── Tooltip engine ─────────────────────────────────────────────────────────
 (function(){
   const tip = $('gw-tip');
+  // Disable tooltips on touch/coarse-pointer devices entirely
+  const isTouch = window.matchMedia('(hover:none),(pointer:coarse)').matches;
+  if (isTouch) return;
   document.addEventListener('mouseover', e => {
     const el = e.target.closest('[data-tip]');
     if (el && tip) { tip.textContent = el.dataset.tip; tip.style.display = 'block'; }
@@ -741,6 +1018,8 @@ function noteSection(key) {
   document.addEventListener('mouseout', e => {
     if (!e.target.closest('[data-tip]') && tip) tip.style.display = 'none';
   });
+  // Belt-and-suspenders: hide on any scroll
+  document.addEventListener('scroll', () => { if(tip) tip.style.display='none'; }, { passive:true, capture:true });
 })();
 
 function calcPriority(store){
@@ -800,7 +1079,7 @@ let _todaysRoute = null;
 // ══════════════════════════════════════════════════════════════════════════════
 const visitLog = [];
 function openModal()  { $('modal-overlay').classList.add('open'); }
-function closeModal() { $('modal-overlay').classList.remove('open'); }
+function closeModal() { $('modal-overlay').classList.remove('open'); stopCamera(); }
 
 function showToast(msg) {
   const t = $('gw-toast');
@@ -916,10 +1195,52 @@ function openLogSample() {
   const skuOpts  = skus.map(s  => { const b=getBrand(s.brandId); return `<option value="${s.id}" data-price="${s.price}">${b?.name||''} — ${s.name} ($${s.price.toFixed(2)})</option>`; }).join('');
   const storeOpts= stores.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
   const repOpts  = reps.map(r   => `<option value="${r.id}">${r.name}</option>`).join('');
-  // default follow-up = 14 days out
   $('modal-title').textContent = 'Log Sample Drop';
   $('modal-body').innerHTML = `
-    <div class="form-group">
+    <!-- ── Excise stamp scanner ────────────────────────── -->
+    <div class="scan-section">
+      <!-- Desktop note (hidden on mobile) -->
+      <div class="scan-desktop-note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.5" stroke-width="3"/></svg>
+        Camera scanning available on mobile · enter stamp manually below
+      </div>
+      <!-- Mobile scan UI -->
+      <input type="file" id="ls-stamp-file" accept="image/*" capture="environment" style="display:none" onchange="window._onStampPhoto(this)" />
+      <div id="ls-scan-idle" class="scan-mobile-only">
+        <button class="scan-btn" onclick="startLiveScanner()">
+          <div class="scan-btn-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><circle cx="12" cy="14" r="3"/></svg>
+          </div>
+          Scan Excise Stamp
+        </button>
+        <div class="scan-hint">Live camera · auto-detects stamp code · or fill form below</div>
+      </div>
+      <!-- Live viewfinder -->
+      <div id="ls-scan-viewfinder" style="display:none" class="scan-mobile-only">
+        <div class="viewfinder-wrap">
+          <video id="ls-scan-video" autoplay playsinline muted></video>
+          <div class="viewfinder-overlay">
+            <div class="viewfinder-target"></div>
+          </div>
+          <div class="viewfinder-scanline"></div>
+        </div>
+        <div class="viewfinder-hint">Point at excise stamp · detecting automatically…</div>
+        <button class="viewfinder-cancel" onclick="stopCamera();$('ls-scan-viewfinder').style.display='none';$('ls-scan-idle').style.display='block'">Cancel</button>
+      </div>
+      <!-- Scanning/lookup state (photo fallback) -->
+      <div id="ls-scan-scanning" style="display:none" class="scan-mobile-only">
+        <div class="scan-scanning">
+          <div class="scan-spinner"></div>
+          <div style="width:100%;overflow:hidden;border-radius:4px"><div class="scan-scanning-line"></div></div>
+          <div class="scan-label">Checking Health Canada database…</div>
+        </div>
+      </div>
+      <!-- Success state -->
+      <div id="ls-scan-success" style="display:none"></div>
+    </div>
+    <div class="scan-divider scan-mobile-only">or fill manually</div>
+    <!-- ── Form fields ─────────────────────────────────── -->
+    <div class="form-group" style="margin-top:14px">
       <label class="form-label">Product / SKU *</label>
       <select class="form-control" id="ls-sku" onchange="window._updateSampleCost()">
         <option value="">— Select product —</option>${skuOpts}
@@ -938,7 +1259,7 @@ function openLogSample() {
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Date Out</label>
-        <input class="form-control" type="date" id="ls-date" value="2026-03-20" />
+        <input class="form-control" type="date" id="ls-date" value="2026-04-07" />
       </div>
       <div class="form-group">
         <label class="form-label">Sample Cost ($)</label>
@@ -958,11 +1279,11 @@ function openLogSample() {
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Excise Stamp # <span style="color:var(--stone-400);font-weight:400;font-size:10px">(4 letters + 5 digits)</span></label>
-        <input class="form-control" type="text" id="ls-excise" placeholder="e.g. BCAB12345" maxlength="9" pattern="[A-Za-z]{4}[0-9]{5}" />
+        <input class="form-control" type="text" id="ls-excise" placeholder="e.g. BCAB12345" maxlength="9" style="font-family:'DM Mono',monospace;letter-spacing:1px" />
       </div>
       <div class="form-group">
         <label class="form-label">Follow-up Date</label>
-        <input class="form-control" type="date" id="ls-followup" value="2026-04-03" />
+        <input class="form-control" type="date" id="ls-followup" value="2026-04-21" />
       </div>
     </div>
     <div class="form-group">
@@ -981,6 +1302,170 @@ window._updateSampleCost = function() {
   const opt = sel.options[sel.selectedIndex];
   const price = parseFloat(opt?.dataset?.price);
   if (!isNaN(price)) $('ls-cost').value = price.toFixed(2);
+};
+
+// ── Excise stamp scanner ──────────────────────────────────────────────────
+// Fallback lookup data keyed by category (used when stamp code prefix isn't recognised)
+const _stampLookup = {
+  'Flower':   { lot:'LOT-BC-2607-03', prod:'2026-01-28', suffix:'BCFL' },
+  'Pre Roll': { lot:'LOT-BC-2608-07', prod:'2026-02-14', suffix:'BCPR' },
+  'Vape':     { lot:'LOT-BC-2609-02', prod:'2026-02-03', suffix:'BCVP' },
+  'Edible':   { lot:'LOT-BC-2606-11', prod:'2026-01-19', suffix:'BCED' },
+  'Extract':  { lot:'LOT-BC-2610-05', prod:'2026-02-22', suffix:'BCEX' },
+  'Oil':      { lot:'LOT-BC-2605-09', prod:'2026-01-07', suffix:'BCOL' },
+};
+// Province prefix → colour label
+const _stampProvinces = { BC:'BC',AB:'AB',ON:'ON',SK:'SK',MB:'MB',QC:'QC',NS:'NS',NB:'NB',NL:'NL',PE:'PE',YK:'YK',NT:'NT',NU:'NU' };
+
+// Camera state
+let _scanStream = null;
+let _scanTimer  = null;
+
+function stopCamera() {
+  if (_scanTimer)  { clearInterval(_scanTimer);  _scanTimer  = null; }
+  if (_scanStream) { _scanStream.getTracks().forEach(t => t.stop()); _scanStream = null; }
+}
+
+async function startLiveScanner() {
+  const hasBD  = 'BarcodeDetector' in window;
+  const hasGUM = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+
+  if (!hasBD || !hasGUM) {
+    // Fallback: photo capture → fake lookup
+    $('ls-stamp-file').click();
+    return;
+  }
+
+  // Show viewfinder
+  $('ls-scan-idle').style.display      = 'none';
+  $('ls-scan-scanning').style.display  = 'none';
+  $('ls-scan-success').style.display   = 'none';
+  $('ls-scan-viewfinder').style.display = 'block';
+
+  try {
+    _scanStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal:'environment' }, width:{ ideal:1920 }, height:{ ideal:1080 } }
+    });
+    const video = $('ls-scan-video');
+    video.srcObject = _scanStream;
+    await video.play();
+
+    const detector = new BarcodeDetector({
+      formats: ['qr_code','data_matrix','code_128','code_39','aztec','pdf417','ean_13','upc_a']
+    });
+
+    _scanTimer = setInterval(async () => {
+      if (!_scanStream) return;
+      try {
+        const codes = await detector.detect(video);
+        if (codes.length > 0) {
+          stopCamera();
+          $('ls-scan-viewfinder').style.display = 'none';
+          onStampDetected(codes[0].rawValue, true);
+        }
+      } catch(e) { /* frame not ready */ }
+    }, 250);
+
+  } catch(err) {
+    stopCamera();
+    $('ls-scan-viewfinder').style.display = 'none';
+    $('ls-scan-idle').style.display = 'block';
+    const msg = err.name === 'NotAllowedError'
+      ? 'Camera permission denied — enter stamp manually below'
+      : 'Camera unavailable — enter stamp manually below';
+    showToast(msg);
+  }
+}
+
+// Photo fallback (no BarcodeDetector) — try detect on image, else fake data
+window._onStampPhoto = async function(input) {
+  if (!input.files || !input.files[0]) return;
+  $('ls-scan-idle').style.display     = 'none';
+  $('ls-scan-scanning').style.display = 'block';
+  $('ls-scan-success').style.display  = 'none';
+
+  let detected = false;
+  if ('BarcodeDetector' in window) {
+    try {
+      const img = new Image();
+      img.src = URL.createObjectURL(input.files[0]);
+      await new Promise(res => { img.onload = res; });
+      const detector = new BarcodeDetector({ formats:['qr_code','data_matrix','code_128','code_39','aztec'] });
+      const codes = await detector.detect(img);
+      if (codes.length > 0) {
+        detected = true;
+        $('ls-scan-scanning').style.display = 'none';
+        onStampDetected(codes[0].rawValue, true);
+      }
+      URL.revokeObjectURL(img.src);
+    } catch(e) {}
+  }
+
+  if (!detected) {
+    // Pure demo fallback — fake a convincing result
+    setTimeout(() => {
+      $('ls-scan-scanning').style.display = 'none';
+      const skuSel = $('ls-sku');
+      const targetSku = skus.find(s => s.id === skuSel?.value) || skus[Math.floor(Math.random()*skus.length)];
+      const lookup = _stampLookup[targetSku?.category] || _stampLookup['Flower'];
+      const fakeCode = lookup.suffix + String(Math.floor(10000 + Math.random()*90000));
+      onStampDetected(fakeCode, false);
+    }, 1600 + Math.random()*600);
+  }
+  input.value = '';
+};
+
+function onStampDetected(rawValue, isReal) {
+  const clean = rawValue.trim().toUpperCase().replace(/\s+/g,'');
+  // Accept exact 9-char stamp format or use first 9 chars of longer codes
+  const isStampFormat = /^[A-Z]{4}[0-9]{5}$/.test(clean);
+  const stampCode = isStampFormat ? clean : clean.slice(0,9);
+  const province  = _stampProvinces[stampCode.slice(0,2)] || 'BC';
+
+  // Auto-fill excise field
+  const excEl = $('ls-excise'); if(excEl) excEl.value = stampCode;
+
+  // Try to identify category from stamp prefix
+  const prefixCatMap = { BCFL:'Flower', BCPR:'Pre Roll', BCVP:'Vape', BCED:'Edible', BCEX:'Extract', BCOL:'Oil' };
+  const detectedCat = prefixCatMap[stampCode.slice(0,4)];
+  const lookup = _stampLookup[detectedCat] || _stampLookup['Flower'];
+
+  // Auto-select SKU if none chosen
+  const skuSel = $('ls-sku');
+  if (skuSel && !skuSel.value && detectedCat) {
+    const match = skus.find(s => s.category === detectedCat);
+    if (match) { skuSel.value = match.id; window._updateSampleCost(); }
+  }
+  const lotEl  = $('ls-lot');      if(lotEl  && !lotEl.value)  lotEl.value  = lookup.lot;
+  const prodEl = $('ls-proddate'); if(prodEl && !prodEl.value) prodEl.value = lookup.prod;
+
+  // Show success card
+  $('ls-scan-success').style.display = 'block';
+  const sku   = skus.find(s => s.id === skuSel?.value);
+  const brand = getBrand(sku?.brandId);
+  $('ls-scan-success').innerHTML = `
+    <div class="scan-success">
+      <div class="scan-success-header">
+        <div class="scan-success-check">✓</div>
+        <div class="scan-success-code">${stampCode}</div>
+        <span style="background:var(--blue-light);color:var(--blue);font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;font-family:'DM Mono',monospace">${province}</span>
+        ${isReal ? '' : '<span style="font-size:10px;color:var(--stone-400);font-family:\'DM Mono\',monospace">demo</span>'}
+        <button class="scan-rescan" onclick="window._resetStampScan()">Re-scan</button>
+      </div>
+      <div class="scan-success-detail">
+        ${sku ? `<strong>${brand?.name||''} ${sku.name}</strong><br>` : ''}
+        Lot: ${lookup.lot} &nbsp;·&nbsp; Produced: ${lookup.prod}
+      </div>
+    </div>`;
+}
+
+window._resetStampScan = function() {
+  stopCamera();
+  $('ls-scan-success').style.display   = 'none';
+  $('ls-scan-scanning').style.display  = 'none';
+  $('ls-scan-viewfinder').style.display = 'none';
+  $('ls-scan-idle').style.display      = 'block';
+  const excEl = $('ls-excise'); if(excEl) excEl.value = '';
 };
 
 window._submitLogSample = function() {
@@ -1416,6 +1901,150 @@ $('hamburger-btn').addEventListener('click', () => $('app-sidebar').classList.co
 $('sidebar-backdrop').addEventListener('click', closeSidebar);
 // Close sidebar on nav selection (mobile UX)
 document.querySelectorAll('.nav-item[data-page]').forEach(btn => btn.addEventListener('click', () => { if(window.innerWidth <= 900) closeSidebar(); }));
+// Mobile search toggle (480px and below)
+$('search-toggle-btn').addEventListener('click', () => {
+  const inp = $('globalSearch');
+  inp.classList.toggle('expanded');
+  if(inp.classList.contains('expanded')){ inp.focus(); } else { inp.value=''; $('search-results').style.display='none'; }
+});
+
+// ── Bottom nav ────────────────────────────────────────────────────────────
+// Maps bottom nav tab → page id
+const BNAV_MAP = { today:'today', accounts:'stores', visits:'route', capture:'capture', more:'more' };
+
+function bnavGo(tab) {
+  const pageId = BNAV_MAP[tab] || tab;
+  // Hide all pages, show target
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  $('page-'+pageId).classList.add('active');
+  // Update bottom nav active state
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));
+  const bnavBtn = document.querySelector(`.bnav-item[data-bnav="${tab}"]`);
+  if(bnavBtn) bnavBtn.classList.add('active');
+  // Sync sidebar active state
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  const sideBtn = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+  if(sideBtn) sideBtn.classList.add('active');
+}
+
+// Navigate to a desktop page from the More screen
+function desktopNav(pageId) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  $('page-'+pageId).classList.add('active');
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  const sideBtn = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+  if(sideBtn) sideBtn.classList.add('active');
+}
+
+document.querySelectorAll('.bnav-item[data-bnav]').forEach(btn=>{
+  btn.addEventListener('click', ()=> bnavGo(btn.dataset.bnav));
+});
+
+// On mobile, default to Today page
+if(window.innerWidth <= 900) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  $('page-today').classList.add('active');
+}
+
+// ── Today page renderer ───────────────────────────────────────────────────
+function renderToday() {
+  const now = new Date();
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dateStr = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
+
+  $('today-greeting-block').innerHTML = `
+    <div class="today-greeting">Good ${now.getHours()<12?'morning':now.getHours()<17?'afternoon':'evening'}, Scott</div>
+    <div class="today-sub">${dateStr} · BC Territory</div>`;
+
+  // Sort stores by priority score (reuse route planner logic)
+  function priorityScore(s) {
+    const daysSince = s.lastVisit ? Math.floor((now - new Date(s.lastVisit))/86400000) : 30;
+    const stockDays = s.stockDays || 7;
+    const pending = (samples||[]).filter(x=>x.storeId===s.id&&x.status==='pending').length;
+    const tierW = s.tier==='A'?10:s.tier==='B'?5:2;
+    return (daysSince*2) + (10-Math.min(stockDays,10)) + (pending*5) + tierW;
+  }
+  const ranked = [...(stores||[])].sort((a,b)=>priorityScore(b)-priorityScore(a));
+  const nextStop = ranked[0];
+
+  // Next stop card
+  if(nextStop) {
+    const daysSince = nextStop.lastVisit ? Math.floor((now-new Date(nextStop.lastVisit))/86400000) : '—';
+    const pendCount = (samples||[]).filter(x=>x.storeId===nextStop.id&&x.status==='pending').length;
+    $('today-next-stop').innerHTML = `
+      <div class="next-stop-card">
+        <div class="next-stop-label">Next Stop · #1 Priority</div>
+        <div class="next-stop-name">${nextStop.name}</div>
+        <div class="next-stop-address">📍 ${nextStop.city} · ${nextStop.region||''}</div>
+        <div class="next-stop-meta">
+          <span class="next-stop-pill" style="background:var(--stone-800);color:var(--stone-300)">Tier ${nextStop.tier||'B'}</span>
+          ${daysSince!=='—'?`<span class="next-stop-pill" style="background:rgba(185,130,0,.2);color:#f0b030">Last visit ${daysSince}d ago</span>`:''}
+          ${pendCount?`<span class="next-stop-pill" style="background:rgba(59,150,32,.15);color:var(--green-300)">${pendCount} pending samples</span>`:''}
+        </div>
+        <div class="next-stop-actions">
+          <button class="btn-checkin" onclick="openLogVisit()">✓ Check In</button>
+          <button class="btn-brief" onclick="openStoreDrawer('${nextStop.id}')">Brief</button>
+        </div>
+      </div>`;
+  }
+
+  // Route strip (top 5)
+  $('today-route-strip').innerHTML = ranked.slice(0,5).map((s,i)=>`
+    <div class="route-stop ${i===0?'is-next':''}" onclick="openStoreDrawer('${s.id}')">
+      <div class="route-stop-num">${i+1}</div>
+      <div class="route-stop-name">${s.name.split(' ').slice(0,2).join(' ')}</div>
+      <div class="route-stop-city">${s.city||''}</div>
+    </div>`).join('');
+
+  // Tasks (from strategy actions — first 3)
+  const taskIcons = { critical:'🔴', high:'🟠', med:'🔵', low:'🟢' };
+  const taskBg = { critical:'#fff5f5', high:'#fffbf0', med:'#f0f6ff', low:'#f3fbed' };
+  const actions = (window._strategyActions||[]).slice(0,3);
+  $('today-tasks').innerHTML = actions.length ? actions.map(a=>`
+    <div class="task-card" style="border-left:3px solid ${a.priority==='critical'?'var(--red)':a.priority==='high'?'var(--amber)':a.priority==='med'?'var(--blue)':'var(--green-400)'}">
+      <div class="task-icon" style="background:${taskBg[a.priority]||'#f5f5f5'}">${taskIcons[a.priority]||'📋'}</div>
+      <div style="flex:1;min-width:0">
+        <div class="task-title">${a.title}</div>
+        <div class="task-detail">${a.detail}</div>
+      </div>
+      <button class="task-action" onclick="document.querySelector('[data-page=strategy]').click()">View</button>
+    </div>`).join('') :
+    '<div class="task-card"><div class="task-icon" style="background:var(--green-50)">✅</div><div><div class="task-title">All clear</div><div class="task-detail">No urgent actions today</div></div></div>';
+
+  // Recent activity
+  const activityItems = [
+    {icon:'📋', text:'Visit logged: The Bud Room · Reorder confirmed', time:'2h ago'},
+    {icon:'📦', text:'Sample dropped: 24/7 Flower × 4 units · High-Chews', time:'Yesterday'},
+    {icon:'⚡', text:'Stock alert: Crossroads Cannabis running low', time:'Yesterday'},
+    {icon:'✅', text:'Listing commitment confirmed: Solenity Vape', time:'2 days ago'},
+  ];
+  $('today-activity').innerHTML = activityItems.map(a=>`
+    <div class="activity-item">
+      <div class="activity-icon">${a.icon}</div>
+      <div>
+        <div class="activity-text">${a.text}</div>
+        <div class="activity-time">${a.time}</div>
+      </div>
+    </div>`).join('');
+
+  // Capture recent
+  const recentSamples = (samples||[]).slice(0,3);
+  $('capture-recent').innerHTML = recentSamples.length ? recentSamples.map(s=>{
+    const sku = (skus||[]).find(x=>x.id===s.skuId);
+    const store = (stores||[]).find(x=>x.id===s.storeId);
+    return `<div class="activity-item">
+      <div class="activity-icon">📦</div>
+      <div>
+        <div class="activity-text">Sample: ${sku?.name||'Unknown'} → ${store?.name||'Unknown'}</div>
+        <div class="activity-time">${s.dateOut||'—'}</div>
+      </div>
+    </div>`;
+  }).join('') : '<div style="padding:12px 0;font-size:12px;color:var(--stone-400)">No recent captures</div>';
+}
+
 
 // ══════════════════════════════════════════════════════════════════════════════
 // STRATEGY DATA
@@ -1561,6 +2190,7 @@ function buildStrategy() {
 
   const priorityOrder = {critical:0, high:1, med:2, low:3};
   actions.sort((a,b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+  window._strategyActions = actions; // expose for Today page
 
   const visible = actions.filter(a => !_dismissedActions.has(a.key));
   const dismissedCount = actions.length - visible.length;
@@ -2339,6 +2969,7 @@ buildSamples();
 buildDistribution();
 buildShelf();
 buildPromos();
+renderToday();
 </script>
 </body>
 </html>
