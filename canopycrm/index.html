@@ -1,0 +1,2344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ghostweave Intel — BC Cannabis CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--green-900:#0f2d0a;--green-800:#1a4710;--green-700:#236014;--green-600:#2e7a19;--green-500:#3b9620;--green-400:#52b034;--green-300:#7ecc60;--green-200:#b3e496;--green-100:#e0f5d0;--green-50:#f3fbed;--stone-950:#0c0e0b;--stone-900:#141710;--stone-800:#1e2318;--stone-700:#2b3022;--stone-600:#3d4534;--stone-500:#586050;--stone-400:#7a8470;--stone-300:#a4ae99;--stone-200:#cdd5c5;--stone-100:#e8ede3;--stone-50:#f5f7f2;--amber:#c87d1a;--amber-light:#fef3dc;--red:#b83030;--red-light:#fdeaea;--blue:#1c5fa8;--blue-light:#e8f1fc;--sidebar-w:220px;--header-h:56px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lato',sans-serif;font-size:14px;background:var(--stone-50);color:var(--stone-900);min-height:100vh;display:flex;flex-direction:column}
+.app-header{position:fixed;top:0;left:0;right:0;height:var(--header-h);background:var(--stone-900);display:flex;align-items:center;padding:0 20px 0 0;z-index:100;border-bottom:1px solid var(--stone-800)}
+.logo-block{width:var(--sidebar-w);display:flex;align-items:center;gap:10px;padding:0 20px;flex-shrink:0}
+.logo-mark{width:30px;height:30px;background:var(--green-500);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.logo-mark svg{width:18px;height:18px}
+.logo-name{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:#fff;letter-spacing:-0.3px}
+.logo-name span{color:var(--green-300)}
+.header-center{flex:1;display:flex;align-items:center;gap:8px;padding:0 20px}
+.header-search{background:var(--stone-800);border:1px solid var(--stone-700);border-radius:6px;padding:7px 12px;color:var(--stone-200);font-size:13px;width:260px;outline:none;font-family:'Lato',sans-serif}
+.header-search::placeholder{color:var(--stone-500)}
+.header-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+.header-badge{background:var(--green-800);color:var(--green-200);font-size:11px;padding:3px 8px;border-radius:4px;font-family:'DM Mono',monospace}
+.rep-avatar{width:32px;height:32px;border-radius:50%;background:var(--green-600);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif}
+.app-sidebar{position:fixed;top:var(--header-h);left:0;bottom:0;width:var(--sidebar-w);background:var(--stone-900);border-right:1px solid var(--stone-800);overflow-y:auto;z-index:90;display:flex;flex-direction:column}
+.nav-section{padding:16px 12px 4px}
+.nav-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--stone-500);padding:0 8px;margin-bottom:4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;cursor:pointer;color:var(--stone-300);font-size:13px;font-weight:400;transition:background .12s,color .12s;border:none;background:none;width:100%;text-align:left;font-family:'Lato',sans-serif}
+.nav-item:hover{background:var(--stone-800);color:#fff}
+.nav-item.active{background:var(--stone-800);color:var(--green-300)}
+.nav-item .nav-icon{width:16px;height:16px;opacity:.7;flex-shrink:0}
+.nav-item.active .nav-icon{opacity:1}
+.nav-count{margin-left:auto;font-size:10px;background:var(--stone-700);color:var(--stone-300);padding:1px 6px;border-radius:3px;font-family:'DM Mono',monospace}
+.sidebar-footer{margin-top:auto;padding:16px 12px;border-top:1px solid var(--stone-800);font-size:11px;color:var(--stone-500);text-align:center;font-family:'DM Mono',monospace}
+.app-main{margin-top:var(--header-h);margin-left:var(--sidebar-w);flex:1;min-height:calc(100vh - var(--header-h))}
+.page{display:none;padding:28px 28px 40px}
+.page.active{display:block}
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px}
+.page-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--stone-900);letter-spacing:-0.4px}
+.page-sub{font-size:13px;color:var(--stone-400);margin-top:2px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:opacity .12s}
+.btn:hover{opacity:.85}
+.btn-primary{background:var(--green-600);color:#fff}
+.btn-outline{background:transparent;border:1px solid var(--stone-200);color:var(--stone-600)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.metrics-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:24px}
+.metric-card{background:#fff;border:1px solid var(--stone-100);border-radius:10px;padding:16px 18px}
+.metric-label{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--stone-400);margin-bottom:8px}
+.metric-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;color:var(--stone-900);line-height:1;margin-bottom:5px}
+.metric-sub{font-size:12px;color:var(--stone-400)}
+.metric-up{color:var(--green-600);font-weight:700}
+.metric-down{color:var(--red);font-weight:700}
+.card{background:#fff;border:1px solid var(--stone-100);border-radius:10px;padding:18px 20px;margin-bottom:16px}
+.card-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--stone-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--stone-400);text-align:left;padding:0 12px 10px 0;border-bottom:1px solid var(--stone-100)}
+tbody td{padding:10px 12px 10px 0;font-size:13px;border-bottom:1px solid var(--stone-50);color:var(--stone-800);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--stone-50)}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace}
+.pill-green{background:var(--green-100);color:var(--green-700)}
+.pill-amber{background:var(--amber-light);color:var(--amber)}
+.pill-red{background:var(--red-light);color:var(--red)}
+.pill-blue{background:var(--blue-light);color:var(--blue)}
+.pill-stone{background:var(--stone-100);color:var(--stone-500)}
+.tier-a{background:var(--green-800);color:var(--green-200)}
+.tier-b{background:var(--stone-700);color:var(--stone-200)}
+.tier-c{background:var(--red-light);color:var(--red)}
+.entity-avatar{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.entity-name{font-weight:700;font-size:13px;color:var(--stone-900)}
+.entity-sub{font-size:12px;color:var(--stone-400);margin-top:1px}
+.rank-badge{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--stone-400);min-width:20px}
+.mini-bar{display:flex;align-items:center;gap:6px}
+.mini-bar-track{width:60px;height:5px;background:var(--stone-100);border-radius:3px;overflow:hidden}
+.mini-bar-fill{height:100%;border-radius:3px;background:var(--green-400)}
+.trend-up{color:var(--green-600);font-weight:700;font-family:'DM Mono',monospace;font-size:12px}
+.trend-flat{color:var(--stone-400);font-family:'DM Mono',monospace;font-size:12px}
+.trend-down{color:var(--red);font-weight:700;font-family:'DM Mono',monospace;font-size:12px}
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200}
+.drawer-overlay.open{display:block}
+.drawer{position:fixed;top:0;right:-500px;bottom:0;width:480px;background:#fff;z-index:210;overflow-y:auto;transition:right .22s ease;box-shadow:-4px 0 24px rgba(0,0,0,.12)}
+.drawer.open{right:0}
+.drawer-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--stone-100);position:sticky;top:0;background:#fff;z-index:1}
+.drawer-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700}
+.drawer-close{background:none;border:none;cursor:pointer;color:var(--stone-400);font-size:20px;padding:2px 6px;border-radius:4px}
+.drawer-close:hover{background:var(--stone-100)}
+.drawer-body{padding:20px}
+.drawer-section{margin-bottom:20px}
+.drawer-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--stone-400);margin-bottom:10px}
+.detail-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--stone-50);font-size:13px}
+.detail-row:last-child{border-bottom:none}
+.detail-key{color:var(--stone-400)}
+.detail-val{color:var(--stone-900);font-weight:700;text-align:right}
+.chart-wrap{position:relative;width:100%}
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-chip{padding:5px 12px;border:1px solid var(--stone-200);border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;background:#fff;color:var(--stone-500);font-family:'Syne',sans-serif;transition:all .1s}
+.filter-chip:hover,.filter-chip.active{background:var(--green-600);border-color:var(--green-600);color:#fff}
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.prog-label{font-size:12px;color:var(--stone-600);width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
+.prog-track{flex:1;height:7px;background:var(--stone-100);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px}
+.prog-val{font-size:12px;color:var(--stone-500);width:56px;text-align:right;flex-shrink:0;font-family:'DM Mono',monospace}
+.stat-cluster{display:flex;gap:20px;flex-wrap:wrap}
+.stat-item .stat-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--stone-900)}
+.stat-item .stat-key{font-size:11px;color:var(--stone-400);margin-top:1px}
+.priority-score{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:#fff}
+.priority-high{background:var(--red)}
+.priority-med{background:var(--amber)}
+.priority-low{background:var(--green-600)}
+.reorder-bar{height:6px;border-radius:3px;transition:width .3s}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-header{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--stone-400);text-align:center;padding:6px 2px}
+.cal-day{min-height:70px;background:#fff;border:1px solid var(--stone-100);border-radius:4px;padding:4px 6px;font-size:11px}
+.cal-day-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--stone-400);margin-bottom:2px}
+.cal-event{font-size:10px;padding:2px 4px;border-radius:3px;margin-bottom:2px;cursor:pointer;line-height:1.3;font-weight:600}
+.shelf-bar-wrap{display:flex;height:20px;border-radius:4px;overflow:hidden;margin-bottom:4px}
+.shelf-bar-seg{height:100%;transition:width .3s}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--stone-200);border-radius:3px}
+/* ── Mobile nav ──────────────────────────────────────────────────────────── */
+/* Hamburger: visible by default, hidden on wide screens */
+.hamburger{display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;padding:6px 10px;color:var(--stone-300);flex-shrink:0;line-height:1}
+.hamburger:hover{color:#fff}
+.hamburger svg{width:22px;height:22px;display:block}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:89}
+.sidebar-backdrop.open{display:block}
+
+/* Hide hamburger on desktop */
+@media(min-width:901px){
+  .hamburger{display:none}
+}
+
+/* ── Responsive breakpoints ──────────────────────────────────────────────── */
+@media(max-width:900px){
+  .metrics-row{grid-template-columns:repeat(2,1fr)}
+  .two-col,.three-col{grid-template-columns:1fr}
+  .logo-block{width:auto;padding:0 10px 0 0}
+  .app-sidebar{transform:translateX(-100%);transition:transform .22s ease;z-index:91}
+  .app-sidebar.mobile-open{transform:translateX(0)}
+  .app-main{margin-left:0}
+  .page{padding:16px 14px 40px}
+  .page-header{flex-direction:column;align-items:flex-start;gap:10px}
+  .page-header > div:last-child{display:flex;flex-wrap:wrap;gap:8px}
+  #brand-health-grid{grid-template-columns:repeat(2,1fr)!important}
+  #reps-grid{grid-template-columns:1fr!important}
+  .drawer{width:100%;right:-100%}
+  .drawer.open{right:0}
+  .modal-box{max-width:calc(100vw - 24px)}
+  .form-row{grid-template-columns:1fr}
+  .check-list{max-height:200px}
+  .stat-cluster{gap:14px}
+  .action-item{padding:9px 10px}
+}
+
+@media(max-width:600px){
+  .header-search{width:140px}
+  .header-badge{display:none}
+  .two-col,.three-col{grid-template-columns:1fr}
+  .metrics-row{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:480px){
+  .metrics-row{grid-template-columns:1fr}
+  #brand-health-grid{grid-template-columns:1fr!important}
+  .header-search{width:100px}
+  .page-title{font-size:18px}
+  .metric-val{font-size:22px}
+  #search-results{width:calc(100vw - 28px);left:0}
+  .card-title{font-size:11px}
+}
+
+/* ── Strategy Intel ──────────────────────────────────────────────────────── */
+.action-item{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;border-radius:8px;margin-bottom:8px;border-left:3px solid transparent}
+.action-critical{background:#fff5f5;border-left-color:var(--red)}
+.action-high{background:#fffbf0;border-left-color:var(--amber)}
+.action-med{background:#f0f6ff;border-left-color:var(--blue)}
+.action-low{background:#f3fbed;border-left-color:var(--green-400)}
+.action-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:1px}
+.action-title{font-size:13px;font-weight:700;color:var(--stone-900);margin-bottom:2px}
+.action-detail{font-size:11px;color:var(--stone-400);line-height:1.5}
+.action-impact{font-size:11px;font-weight:700;color:var(--green-600);margin-top:3px}
+.health-card{background:var(--stone-50);border:1px solid var(--stone-100);border-radius:8px;padding:14px}
+.health-score-ring{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.health-bar-track{height:5px;background:var(--stone-200);border-radius:3px;overflow:hidden;margin-top:4px}
+.health-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.activity-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--stone-50);font-size:12px}
+.activity-row:last-child{border-bottom:none}
+.activity-dot{width:7px;height:7px;border-radius:50%;margin-top:4px;flex-shrink:0}
+/* ── Modals ──────────────────────────────────────────────────────────────── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:12px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.25)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--stone-100);position:sticky;top:0;background:#fff;z-index:1}
+.modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700}
+.modal-body{padding:20px}
+.form-group{margin-bottom:14px}
+.form-label{font-size:11px;font-weight:700;color:var(--stone-500);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;display:block}
+.form-control{width:100%;border:1px solid var(--stone-200);border-radius:6px;padding:8px 11px;font-size:13px;font-family:'Lato',sans-serif;color:var(--stone-800);outline:none;background:#fff;transition:border .15s}
+.form-control:focus{border-color:var(--green-400)}
+select.form-control{cursor:pointer}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;padding:14px 20px;border-top:1px solid var(--stone-100);background:#fff;position:sticky;bottom:0}
+.check-list{display:flex;flex-direction:column;gap:2px;max-height:120px;overflow-y:auto;border:1px solid var(--stone-100);border-radius:6px;padding:6px 10px;background:var(--stone-50)}
+.check-list label{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:12px;cursor:pointer;color:var(--stone-700)}
+.check-list label:hover{color:var(--stone-900)}
+input[type=checkbox]{accent-color:var(--green-600);width:13px;height:13px;flex-shrink:0}
+/* ── Toast ───────────────────────────────────────────────────────────────── */
+#gw-toast{position:fixed;bottom:24px;right:24px;background:var(--stone-900);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:9998;box-shadow:0 4px 16px rgba(0,0,0,.3);display:none;transition:opacity .3s;font-family:'Lato',sans-serif}
+/* ── Print ───────────────────────────────────────────────────────────────── */
+@media print{.app-header,.app-sidebar,#gw-tip,#gw-toast,.modal-overlay,.drawer,.drawer-overlay,.filter-row,.btn{display:none!important}.app-main{margin:0!important}.page{display:none!important}.page.active{display:block!important}body{background:#fff!important}}
+/* ── Tooltip ─────────────────────────────────────────────────────────────── */
+#gw-tip{position:fixed;background:var(--stone-900);color:#fff;font-size:11px;line-height:1.55;padding:7px 11px;border-radius:7px;z-index:9999;pointer-events:none;max-width:230px;display:none;box-shadow:0 4px 14px rgba(0,0,0,.35);border:1px solid var(--stone-700)}
+/* ── Notes ───────────────────────────────────────────────────────────────── */
+.note-area{width:100%;border:1px solid var(--stone-200);border-radius:6px;padding:9px 11px;font-size:12px;font-family:'Lato',sans-serif;color:var(--stone-800);resize:vertical;min-height:72px;outline:none;background:var(--stone-50);transition:border .15s}
+.note-area:focus{border-color:var(--green-400);background:#fff}
+.note-saved{font-size:11px;color:var(--green-600);margin-top:4px;display:none}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+    <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="19" y2="6"/><line x1="3" y1="11" x2="19" y2="11"/><line x1="3" y1="16" x2="19" y2="16"/></svg>
+  </button>
+  <div class="logo-block">
+    <img src="ghostweave_logo.png" alt="Ghostweave" style="height:30px;width:auto;object-fit:contain" onerror="this.style.display='none'" />
+    <span class="logo-name">Ghostweave<span>Intel</span></span>
+  </div>
+  <div class="header-center" style="position:relative">
+    <input class="header-search" type="text" placeholder="Search brands, stores, contacts, SKUs…" id="globalSearch" autocomplete="off" />
+    <div id="search-results" style="position:absolute;top:calc(100% + 6px);left:20px;width:340px;background:#fff;border-radius:8px;box-shadow:0 4px 24px rgba(0,0,0,.22);z-index:500;display:none;max-height:380px;overflow-y:auto;border:1px solid var(--stone-200)"></div>
+  </div>
+  <div class="header-right">
+    <button id="units-rev-toggle" onclick="toggleUnitMode()" data-tip="Toggle between Revenue ($) and Units (#) view across Dashboard, Brands, Stores, and Sales" style="background:var(--stone-700);border:1px solid var(--stone-600);color:var(--stone-200);font-size:11px;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:0.5px;transition:background .12s">$ REV</button>
+    <span class="header-badge">BC · v1.1</span>
+    <div class="rep-avatar">SM</div>
+  </div>
+</header>
+
+<aside class="app-sidebar" id="app-sidebar">
+  <div class="nav-section">
+    <div class="nav-label">Overview</div>
+    <button class="nav-item active" data-page="dashboard">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item" data-page="strategy">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4z" fill="currentColor"/></svg>
+      Strategy Intel
+    </button>
+    <button class="nav-item" data-page="route">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="4" cy="4" r="2"/><circle cx="12" cy="12" r="2"/><path d="M5.5 5.5L10.5 10.5" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="12" cy="4" r="1.5" opacity=".4"/></svg>
+      Route Planner
+    </button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">CRM</div>
+    <button class="nav-item" data-page="brands">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="3"/><path d="M5 6h6M5 8h4M5 10h5" stroke="white" stroke-width="1" fill="none"/></svg>
+      Brands <span class="nav-count">8</span>
+    </button>
+    <button class="nav-item" data-page="stores">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M1 6l7-5 7 5v8a1 1 0 01-1 1H2a1 1 0 01-1-1V6z"/></svg>
+      Stores <span class="nav-count">12</span>
+    </button>
+    <button class="nav-item" data-page="contacts">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+      Contacts <span class="nav-count">24</span>
+    </button>
+    <button class="nav-item" data-page="reps">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M5 8a3 3 0 100-6 3 3 0 000 6zm6-3a2 2 0 100-4 2 2 0 000 4z"/><path d="M2 16c0-2.8 1.3-5 3-5s3 2.2 3 5m2-3c1.1 0 2 1 2 2v1"/></svg>
+      Sales Reps <span class="nav-count">3</span>
+    </button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Intelligence</div>
+    <button class="nav-item" data-page="sales">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M1 12l4-4 3 3 4-5 3 3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+      Sales &amp; Revenue
+    </button>
+    <button class="nav-item" data-page="samples">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="5" y="1" width="6" height="4" rx="1"/><path d="M4 5h8v9a1 1 0 01-1 1H5a1 1 0 01-1-1V5z"/></svg>
+      Samples &amp; ROV
+    </button>
+    <button class="nav-item" data-page="distribution">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="2"/><circle cx="13" cy="4" r="2"/><circle cx="13" cy="12" r="2"/><path d="M5 7.2L11 5M5 8.8L11 11" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+      Distribution
+    </button>
+    <button class="nav-item" data-page="shelf">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="3" rx="1"/><rect x="1" y="7" width="14" height="3" rx="1"/><rect x="1" y="12" width="14" height="3" rx="1"/></svg>
+      Shelf Share
+    </button>
+    <button class="nav-item" data-page="promo">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="12" rx="1"/><path d="M4 1v4M12 1v4M1 7h14" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+      Promo Calendar
+    </button>
+  </div>
+  <div class="sidebar-footer">Ghostweave Intel · v1.1</div>
+</aside>
+
+<main class="app-main">
+
+  <!-- DASHBOARD -->
+  <div id="page-dashboard" class="page active">
+    <div class="page-header">
+      <div><div class="page-title">Dashboard</div><div class="page-sub">30-day snapshot · British Columbia</div></div>
+      <div style="display:flex;gap:8px"><button class="btn btn-outline" onclick="window.print()">Export</button><button class="btn btn-primary" onclick="openLogVisit()">+ Log Visit</button></div>
+    </div>
+    <div class="metrics-row" id="dash-metrics"></div>
+    <div class="two-col">
+      <div class="card"><div class="card-title">Weekly Revenue Trend</div><div class="chart-wrap" style="height:220px"><canvas id="chart-revenue"></canvas></div></div>
+      <div class="card"><div class="card-title" id="brand-rev-card-title">Revenue by Brand (30d)</div><div id="brand-rev-bars"></div></div>
+    </div>
+    <div class="two-col">
+      <div class="card"><div class="card-title" id="top-stores-card-title">Top Stores by Revenue</div><div class="table-wrap"><table><thead><tr><th>#</th><th>Store</th><th>Region</th><th id="top-stores-metric-th">Rev (30d)</th><th>Tier</th></tr></thead><tbody id="top-stores-tbody"></tbody></table></div></div>
+      <div class="card"><div class="card-title">Visit Priority Alerts</div><div id="dash-priority-alerts"></div></div>
+    </div>
+  </div>
+
+  <!-- STRATEGY INTEL -->
+  <div id="page-strategy" class="page">
+    <div class="page-header">
+      <div><div class="page-title">Strategy Intel</div><div class="page-sub">Synthesized priorities · brand health · revenue forecast · stock risk</div></div>
+      <span style="background:var(--green-800);color:var(--green-200);font-size:11px;padding:5px 12px;border-radius:6px;font-family:'DM Mono',monospace">Live · Mar 20, 2026</span>
+    </div>
+    <div class="metrics-row" id="strategy-metrics"></div>
+    <div class="two-col">
+      <div>
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title">Priority Actions <span data-tip="Auto-generated from visit scores, sample age, OOS gaps, and SKU trends. Sorted by urgency and revenue impact." style="cursor:help;color:var(--stone-400);font-size:10px;font-weight:700;border:1px solid var(--stone-300);border-radius:3px;padding:0 4px">?</span></div>
+          <div id="strategy-actions"></div>
+        </div>
+      </div>
+      <div>
+        <div class="card"><div class="card-title">Revenue Forecast — Actual vs Projected</div><div class="chart-wrap" style="height:200px"><canvas id="chart-forecast"></canvas></div></div>
+        <div class="card" style="margin-top:16px"><div class="card-title">Recent Field Activity</div><div id="strategy-activity"></div></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">Brand Health Scorecard <span data-tip="Composite score (0–100) weighted: Revenue Trend 35% · Velocity Trend 25% · Store Coverage 25% · Sample ROV 15%." style="cursor:help;color:var(--stone-400);font-size:10px;font-weight:700;border:1px solid var(--stone-300);border-radius:3px;padding:0 4px">?</span></div>
+      <div id="brand-health-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px"></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">Stock Risk — Low Inventory Alerts <span data-tip="Stores with ≤3 days of estimated stock remaining. At-Risk Revenue = daily revenue pace × remaining stock days." style="cursor:help;color:var(--stone-400);font-size:10px;font-weight:700;border:1px solid var(--stone-300);border-radius:3px;padding:0 4px">?</span></div>
+      <div class="table-wrap"><table><thead><tr><th>Store</th><th>Region</th><th>Tier</th><th>Stock Days</th><th>Rev/Day</th><th>At-Risk Revenue</th><th>Action</th></tr></thead><tbody id="stock-risk-tbody"></tbody></table></div>
+    </div>
+    <div class="card" style="margin-top:16px;border-left:4px solid var(--red)">
+      <div class="card-title">⚠ Delist Threat — SKUs Below Listing Requirement <span data-tip="SKUs where current weekly sell-through (unitsWk) is below the BCLDB minimum listing requirement. Sustained underperformance risks removal from the provincial catalogue." style="cursor:help;color:var(--stone-400);font-size:10px;font-weight:700;border:1px solid var(--stone-300);border-radius:3px;padding:0 4px">?</span></div>
+      <div id="delist-threat-body"></div>
+    </div>
+  </div>
+
+  <!-- ROUTE PLANNER -->
+  <div id="page-route" class="page">
+    <div class="page-header">
+      <div><div class="page-title">Route Planner</div><div class="page-sub">Visit priority scoring · optimize your day</div></div>
+      <div style="display:flex;gap:8px"><button class="btn btn-outline" onclick="window._filterRoute('all')">All Regions</button><button class="btn btn-primary" onclick="openPlanRoute()">Plan Today's Route</button></div>
+    </div>
+    <div class="metrics-row" id="route-metrics"></div>
+    <div id="route-today-banner"></div>
+    <div class="card"><div class="card-title" data-tip="Priority Score = (Days Since Visit × 2) + (10 − Stock Days) + (Pending Samples × 5) + Tier Weight (A=10, B=5, C=2). Higher = visit sooner.">Algorithm: Score = (Days Since Visit × 2) + (10 − Stock Days) + (Pending Samples × 5) + Tier Weight</div></div>
+    <div class="filter-row" id="route-filters"></div>
+    <div class="card"><div class="card-title">Stores Ranked by Visit Priority</div>
+      <div class="table-wrap"><table><thead><tr><th>Priority</th><th>Store</th><th>Region</th><th>Last Visit</th><th>Days Ago</th><th>Stock Days</th><th>Pending Samples</th><th>Tier</th><th>Score</th><th>Reorder Prediction</th></tr></thead><tbody id="route-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- BRANDS -->
+  <div id="page-brands" class="page">
+    <div class="page-header">
+      <div><div class="page-title">Brands</div><div class="page-sub">All represented brands · click for details</div></div>
+      <button class="btn btn-primary" onclick="openBrandForm('')">+ Add Brand</button>
+    </div>
+    <div class="filter-row" id="brand-filters"></div>
+    <div class="card"><div class="table-wrap"><table><thead><tr><th>Rank</th><th>Brand</th><th>Category</th><th>Stores</th><th id="brands-units-th">Units/30d</th><th id="brands-metric-th">Revenue/30d</th><th>vs Prior</th><th>Status</th></tr></thead><tbody id="brands-tbody"></tbody></table></div></div>
+  </div>
+
+  <!-- STORES -->
+  <div id="page-stores" class="page">
+    <div class="page-header">
+      <div><div class="page-title">Stores</div><div class="page-sub">All tracked retail locations across BC</div></div>
+      <button class="btn btn-primary" onclick="openStoreForm('')">+ Add Store</button>
+    </div>
+    <div class="filter-row" id="store-filters"></div>
+    <div class="card"><div class="table-wrap"><table><thead><tr><th>Store</th><th>Chain</th><th>City</th><th>Rep</th><th>SKUs</th><th id="stores-metric-th">Rev (30d)</th><th>Last Visit</th><th>Tier</th><th>Status</th></tr></thead><tbody id="stores-tbody"></tbody></table></div></div>
+  </div>
+
+  <!-- CONTACTS -->
+  <div id="page-contacts" class="page">
+    <div class="page-header">
+      <div><div class="page-title">Contacts</div><div class="page-sub">Budtenders, buyers &amp; store managers</div></div>
+      <button class="btn btn-primary" onclick="openContactForm('')">+ Add Contact</button>
+    </div>
+    <div class="filter-row" id="contact-filters"></div>
+    <div class="card"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Role</th><th>Store</th><th>Email</th><th>Phone</th><th>Last Contact</th><th>Influence</th><th>Notes</th></tr></thead><tbody id="contacts-tbody"></tbody></table></div></div>
+  </div>
+
+  <!-- SALES REPS -->
+  <div id="page-reps" class="page">
+    <div class="page-header">
+      <div><div class="page-title">Sales Reps</div><div class="page-sub">Territory performance · rep comparison</div></div>
+    </div>
+    <div id="reps-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px"></div>
+    <div class="two-col" style="margin-top:16px">
+      <div class="card">
+        <div class="card-title">Revenue by Category — Rep vs Rep <span data-tip="Each group shows total 30d revenue for that category, split by rep. Only reps who manage a brand in that category are shown." style="cursor:help;color:var(--stone-400);font-size:10px;font-weight:700;border:1px solid var(--stone-300);border-radius:3px;padding:0 4px">?</span></div>
+        <div class="chart-wrap" style="height:280px"><canvas id="chart-rep-category"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Revenue by Brand — Rep vs Rep</div>
+        <div class="chart-wrap" style="height:280px"><canvas id="chart-rep-brand"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">Rep × Brand Breakdown <span data-tip="Full brand-level split by rep. Revenue and units for the 30-day period. Only the assigned rep's column is populated per brand." style="cursor:help;color:var(--stone-400);font-size:10px;font-weight:700;border:1px solid var(--stone-300);border-radius:3px;padding:0 4px">?</span></div>
+      <div class="table-wrap" id="rep-brand-table"></div>
+    </div>
+  </div>
+
+  <!-- SALES & REVENUE -->
+  <div id="page-sales" class="page">
+    <div class="page-header">
+      <div><div class="page-title">Sales &amp; Revenue</div><div class="page-sub">SKU velocity, revenue ranking, trends</div></div>
+    </div>
+    <div class="metrics-row" id="sales-metrics"></div>
+    <div class="two-col">
+      <div class="card"><div class="card-title">Revenue by Category</div><div class="chart-wrap" style="height:220px"><canvas id="chart-category"></canvas></div></div>
+      <div class="card"><div class="card-title">Top SKU Velocity</div><div class="chart-wrap" style="height:220px"><canvas id="chart-velocity"></canvas></div></div>
+    </div>
+    <div class="card"><div class="card-title">SKU Velocity Ranking</div><div class="table-wrap"><table><thead><tr><th>#</th><th>Product</th><th>Brand</th><th>Category</th><th>Price</th><th>Units/wk</th><th>Stores</th><th>Trend (4wk)</th><th>Reorder</th></tr></thead><tbody id="skus-tbody"></tbody></table></div></div>
+  </div>
+
+  <!-- SAMPLES & ROV -->
+  <div id="page-samples" class="page">
+    <div class="page-header">
+      <div><div class="page-title">Samples &amp; ROV</div><div class="page-sub">Track samples, ROV (Revenue per $1 sample cost), conversions</div></div>
+      <button class="btn btn-primary" onclick="openLogSample()">+ Log Sample</button>
+    </div>
+    <div class="metrics-row" id="sample-metrics"></div>
+    <div class="two-col">
+      <div class="card"><div class="card-title">ROV by Brand (Revenue / $1 Sample Cost)</div><div id="rov-bars"></div></div>
+      <div class="card"><div class="card-title">Conversion Funnel</div><div class="chart-wrap" style="height:220px"><canvas id="chart-funnel"></canvas></div></div>
+    </div>
+    <div class="card"><div class="card-title">Sample Log</div><div class="table-wrap"><table><thead><tr><th>Product</th><th>Brand</th><th>Store</th><th>Rep</th><th>Date Out</th><th>Cost</th><th>Revenue Generated</th><th>ROV</th><th>Status</th></tr></thead><tbody id="samples-tbody"></tbody></table></div></div>
+  </div>
+
+  <!-- DISTRIBUTION -->
+  <div id="page-distribution" class="page">
+    <div class="page-header">
+      <div><div class="page-title">Distribution Matrix</div><div class="page-sub">Brand × store coverage · SKU depth</div></div>
+    </div>
+    <div class="metrics-row" id="dist-metrics"></div>
+    <div class="card"><div class="card-title">Brand × Store Matrix</div><div class="table-wrap" id="matrix-wrap"></div></div>
+  </div>
+
+  <!-- SHELF SHARE -->
+  <div id="page-shelf" class="page">
+    <div class="page-header">
+      <div><div class="page-title">Shelf Share</div><div class="page-sub">Competitive shelf share analysis by region</div></div>
+    </div>
+    <div class="filter-row" id="shelf-filters"></div>
+    <div class="metrics-row" id="shelf-metrics"></div>
+    <div class="card"><div class="card-title">Shelf Share by Store</div><div id="shelf-store-bars"></div></div>
+    <div class="two-col">
+      <div class="card"><div class="card-title">Share by Region</div><div class="chart-wrap" style="height:260px"><canvas id="chart-shelf-region"></canvas></div></div>
+      <div class="card"><div class="card-title">Share by Category</div><div class="chart-wrap" style="height:260px"><canvas id="chart-shelf-cat"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- PROMO CALENDAR -->
+  <div id="page-promo" class="page">
+    <div class="page-header">
+      <div><div class="page-title">Promo Calendar</div><div class="page-sub">Planned promotions &amp; revenue lift tracking</div></div>
+      <button class="btn btn-primary" onclick="openAddPromo()">+ Add Promo</button>
+    </div>
+    <div class="metrics-row" id="promo-metrics"></div>
+    <div class="card"><div class="card-title">Upcoming &amp; Active Promotions</div><div class="table-wrap"><table><thead><tr><th>Promo</th><th>Brand</th><th>Type</th><th>Stores</th><th>Start</th><th>End</th><th>Budget</th><th>Expected Lift</th><th>Actual Lift</th><th>Status</th></tr></thead><tbody id="promos-tbody"></tbody></table></div></div>
+    <div class="card"><div class="card-title">March 2026</div><div id="promo-calendar"></div></div>
+  </div>
+
+</main>
+
+<div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+<div id="gw-toast"></div>
+<div id="gw-tip"></div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title"></div>
+      <button class="drawer-close" onclick="closeModal()">&#10005;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<div class="drawer" id="detail-drawer">
+  <div class="drawer-header">
+    <div class="drawer-title" id="drawer-title">Detail</div>
+    <button class="drawer-close" id="drawer-close-btn">&#10005;</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════════════════════
+const TODAY = new Date('2026-03-20');
+
+const brands = [
+  { id:'b1', name:'Broken Coast', category:'Premium Flower', province:'BC', repId:'r1', skus:14, activeStores:28, status:'active', logo:'BC', color:'#2e7a19', revenue30d:92400, units30d:3510, revenuePrev:82100, rank:1 },
+  { id:'b2', name:'Tantalus Labs', category:'Sun-grown Flower', province:'BC', repId:'r2', skus:11, activeStores:24, status:'active', logo:'TL', color:'#185FA5', revenue30d:78300, units30d:2940, revenuePrev:71200, rank:2 },
+  { id:'b3', name:'Whistler Cannabis', category:'Organic Premium', province:'BC', repId:'r1', skus:9, activeStores:18, status:'active', logo:'WC', color:'#0F6E56', revenue30d:64800, units30d:2420, revenuePrev:67000, rank:3 },
+  { id:'b4', name:'General Admission', category:'Value Flower', province:'BC', repId:'r3', skus:10, activeStores:26, status:'active', logo:'GA', color:'#854F0B', revenue30d:56200, units30d:3180, revenuePrev:48900, rank:4 },
+  { id:'b5', name:'SHRED', category:'Milled Flower / Pre-rolls', province:'BC', repId:'r2', skus:8, activeStores:22, status:'active', logo:'SH', color:'#E63946', revenue30d:51800, units30d:4200, revenuePrev:44600, rank:5 },
+  { id:'b6', name:'Spinach', category:'Mid-range Flower / Vapes', province:'BC', repId:'r3', skus:12, activeStores:25, status:'active', logo:'SP', color:'#6B21A8', revenue30d:48100, units30d:2870, revenuePrev:46500, rank:6 },
+  { id:'b7', name:'Jeeter', category:'Infused Pre-rolls', province:'CA', repId:'r1', skus:6, activeStores:15, status:'active', logo:'JT', color:'#F97316', revenue30d:38900, units30d:1680, revenuePrev:28400, rank:7 },
+  { id:'b8', name:'Grön', category:'Edibles / Gummies', province:'BC', repId:'r2', skus:8, activeStores:20, status:'active', logo:'GR', color:'#059669', revenue30d:29600, units30d:2240, revenuePrev:25100, rank:8 },
+];
+
+const stores = [
+  { id:'s1', name:'Sessions Cannabis Robson', chain:'Sessions', city:'Vancouver', region:'Metro Van', rep:'r1', brandIds:['b1','b2','b3','b4','b5','b6','b7'], skus:18, lastVisit:'2026-03-18', status:'active', revenue30d:34200, units30d:1140, tier:'A', stockDays:8, pendingSamples:1 },
+  { id:'s2', name:'Spiritleaf Kitsilano', chain:'Spiritleaf', city:'Vancouver', region:'Metro Van', rep:'r1', brandIds:['b1','b2','b4','b5','b6','b8'], skus:15, lastVisit:'2026-03-15', status:'active', revenue30d:28400, units30d:940, tier:'A', stockDays:6, pendingSamples:2 },
+  { id:'s3', name:'Canna Cabana Hastings', chain:'Canna Cabana', city:'Vancouver', region:'Metro Van', rep:'r2', brandIds:['b1','b2','b3','b4','b5','b6','b7','b8'], skus:22, lastVisit:'2026-03-12', status:'active', revenue30d:31800, units30d:1060, tier:'A', stockDays:4, pendingSamples:3 },
+  { id:'s4', name:'Tokyo Smoke Gastown', chain:'Tokyo Smoke', city:'Vancouver', region:'Metro Van', rep:'r2', brandIds:['b1','b2','b3','b7'], skus:12, lastVisit:'2026-03-16', status:'active', revenue30d:24100, units30d:800, tier:'A', stockDays:7, pendingSamples:0 },
+  { id:'s5', name:'BC Cannabis Store Broadway', chain:'BC Cannabis Store', city:'Vancouver', region:'Metro Van', rep:'r1', brandIds:['b1','b2','b3','b4','b5','b6','b7','b8'], skus:24, lastVisit:'2026-03-10', status:'active', revenue30d:38600, units30d:1290, tier:'A', stockDays:3, pendingSamples:2 },
+  { id:'s6', name:'Canna Cabana Victoria', chain:'Canna Cabana', city:'Victoria', region:'Vancouver Island', rep:'r1', brandIds:['b1','b2','b3','b4','b5','b6','b8'], skus:19, lastVisit:'2026-03-14', status:'active', revenue30d:29200, units30d:970, tier:'A', stockDays:5, pendingSamples:1 },
+  { id:'s7', name:'Sessions Cannabis Nanaimo', chain:'Sessions', city:'Nanaimo', region:'Vancouver Island', rep:'r3', brandIds:['b1','b4','b5','b6'], skus:10, lastVisit:'2026-03-05', status:'active', revenue30d:16800, units30d:560, tier:'B', stockDays:3, pendingSamples:2 },
+  { id:'s8', name:'BC Cannabis Store Victoria', chain:'BC Cannabis Store', city:'Victoria', region:'Vancouver Island', rep:'r3', brandIds:['b1','b2','b3','b4','b5','b6','b7','b8'], skus:20, lastVisit:'2026-03-08', status:'active', revenue30d:26400, units30d:880, tier:'A', stockDays:4, pendingSamples:1 },
+  { id:'s9', name:'Spiritleaf Langley', chain:'Spiritleaf', city:'Langley', region:'Fraser Valley', rep:'r2', brandIds:['b1','b2','b4','b5','b6','b8'], skus:14, lastVisit:'2026-03-02', status:'active', revenue30d:19200, units30d:640, tier:'B', stockDays:2, pendingSamples:3 },
+  { id:'s10', name:'Canna Cabana Abbotsford', chain:'Canna Cabana', city:'Abbotsford', region:'Fraser Valley', rep:'r3', brandIds:['b1','b4','b5','b6'], skus:11, lastVisit:'2026-02-28', status:'watch', revenue30d:14600, units30d:490, tier:'B', stockDays:1, pendingSamples:2 },
+  { id:'s11', name:'BC Cannabis Store Chilliwack', chain:'BC Cannabis Store', city:'Chilliwack', region:'Fraser Valley', rep:'r2', brandIds:['b1','b2','b4','b5','b6'], skus:12, lastVisit:'2026-03-01', status:'active', revenue30d:15800, units30d:530, tier:'B', stockDays:2, pendingSamples:1 },
+  { id:'s12', name:'Tokyo Smoke Surrey', chain:'Tokyo Smoke', city:'Surrey', region:'Fraser Valley', rep:'r3', brandIds:['b2','b3','b5','b7','b8'], skus:9, lastVisit:'2026-02-22', status:'watch', revenue30d:11400, units30d:380, tier:'C', stockDays:1, pendingSamples:4 },
+];
+
+const reps = [
+  { id:'r1', name:'Scott Mackinnon', initials:'SM', territory:'Metro Van / Island', storeIds:['s1','s2','s5','s6'], brandIds:['b1','b3','b7'], revenue30d:130400, units30d:4340, visits30d:22, samplesOut:38 },
+  { id:'r2', name:'Jess Tran', initials:'JT', territory:'Metro Van East / Valley', storeIds:['s3','s4','s9','s11'], brandIds:['b2','b5','b8'], revenue30d:96900, units30d:3230, visits30d:17, samplesOut:28 },
+  { id:'r3', name:'Mike Holloway', initials:'MH', territory:'Island / Fraser Valley', storeIds:['s7','s8','s10','s12'], brandIds:['b4','b6'], revenue30d:69200, units30d:2310, visits30d:13, samplesOut:19 },
+];
+
+const contacts = [
+  { id:'c1', name:'Ava Chen', role:'Buyer', storeId:'s1', email:'ava.chen@sessions.ca', phone:'604-555-0121', lastContact:'2026-03-18', influence:'High', notes:'Prefers premium brands, open to Jeeter' },
+  { id:'c2', name:'Marcus Wong', role:'Budtender', storeId:'s1', email:'m.wong@sessions.ca', phone:'604-555-0122', lastContact:'2026-03-18', influence:'Medium', notes:'Loves SHRED, great hand-seller' },
+  { id:'c3', name:'Priya Sharma', role:'Store Manager', storeId:'s2', email:'priya@spiritleaf.ca', phone:'604-555-0131', lastContact:'2026-03-15', influence:'High', notes:'Decision maker, interested in Grön launch' },
+  { id:'c4', name:'Jake Morrison', role:'Budtender', storeId:'s2', email:'jake.m@spiritleaf.ca', phone:'604-555-0132', lastContact:'2026-03-14', influence:'Medium', notes:'Vape specialist' },
+  { id:'c5', name:'Sarah Kim', role:'Buyer', storeId:'s3', email:'s.kim@cannacabana.ca', phone:'604-555-0141', lastContact:'2026-03-12', influence:'High', notes:'Volume buyer, wants competitive pricing' },
+  { id:'c6', name:'Tyler Oakes', role:'Budtender', storeId:'s3', email:'t.oakes@cannacabana.ca', phone:'604-555-0142', lastContact:'2026-03-11', influence:'Medium', notes:'Edibles expert, push Grön' },
+  { id:'c7', name:'Liam Foster', role:'Budtender', storeId:'s4', email:'liam@tokyosmoke.ca', phone:'604-555-0151', lastContact:'2026-03-16', influence:'Medium', notes:'Flower connoisseur, recommends Broken Coast' },
+  { id:'c8', name:'Emma Dubois', role:'Store Manager', storeId:'s4', email:'emma.d@tokyosmoke.ca', phone:'604-555-0152', lastContact:'2026-03-16', influence:'High', notes:'Key relationship, expanding shelf space' },
+  { id:'c9', name:'Nina Patel', role:'Buyer', storeId:'s5', email:'nina.p@bccs.ca', phone:'604-555-0161', lastContact:'2026-03-10', influence:'High', notes:'Government buyer, slow process but high volume' },
+  { id:'c10', name:'Chris Tanaka', role:'Budtender', storeId:'s5', email:'c.tanaka@bccs.ca', phone:'604-555-0162', lastContact:'2026-03-09', influence:'Low', notes:'New hire, needs education on portfolio' },
+  { id:'c11', name:'Raj Sidhu', role:'Store Manager', storeId:'s6', email:'raj@cannacabana.ca', phone:'250-555-0171', lastContact:'2026-03-14', influence:'High', notes:'Strong advocate, wants exclusive promos' },
+  { id:'c12', name:'Megan Lee', role:'Budtender', storeId:'s6', email:'megan.l@cannacabana.ca', phone:'250-555-0172', lastContact:'2026-03-13', influence:'Medium', notes:'Active on social, influences customers' },
+  { id:'c13', name:'Dan O\'Brien', role:'Buyer', storeId:'s7', email:'dan.o@sessions.ca', phone:'250-555-0181', lastContact:'2026-03-05', influence:'Medium', notes:'Conservative buyer, needs data to commit' },
+  { id:'c14', name:'Yuki Sato', role:'Budtender', storeId:'s8', email:'yuki.s@bccs.ca', phone:'250-555-0191', lastContact:'2026-03-08', influence:'Medium', notes:'Enthusiastic about new launches' },
+  { id:'c15', name:'Olivia Grant', role:'Store Manager', storeId:'s9', email:'olivia@spiritleaf.ca', phone:'604-555-0201', lastContact:'2026-03-02', influence:'High', notes:'Expanding store, good opportunity' },
+  { id:'c16', name:'Ethan Singh', role:'Budtender', storeId:'s9', email:'ethan.s@spiritleaf.ca', phone:'604-555-0202', lastContact:'2026-03-01', influence:'Low', notes:'Part-time, limited hours' },
+  { id:'c17', name:'Jordan Reeves', role:'Buyer', storeId:'s10', email:'jordan.r@cannacabana.ca', phone:'604-555-0211', lastContact:'2026-02-28', influence:'Medium', notes:'Price-sensitive, wants deals' },
+  { id:'c18', name:'Kayla Nguyen', role:'Budtender', storeId:'s10', email:'kayla.n@cannacabana.ca', phone:'604-555-0212', lastContact:'2026-02-26', influence:'Medium', notes:'Edible specialist' },
+  { id:'c19', name:'Sam Hartley', role:'Store Manager', storeId:'s11', email:'sam.h@bccs.ca', phone:'604-555-0221', lastContact:'2026-03-01', influence:'High', notes:'Government process, plan ahead' },
+  { id:'c20', name:'Alex Rivera', role:'Budtender', storeId:'s11', email:'alex.r@bccs.ca', phone:'604-555-0222', lastContact:'2026-02-28', influence:'Low', notes:'Knows concentrates well' },
+  { id:'c21', name:'Brooke Wilson', role:'Buyer', storeId:'s12', email:'brooke.w@tokyosmoke.ca', phone:'604-555-0231', lastContact:'2026-02-22', influence:'Medium', notes:'Needs follow-up, store underperforming' },
+  { id:'c22', name:'Dylan Park', role:'Budtender', storeId:'s12', email:'dylan.p@tokyosmoke.ca', phone:'604-555-0232', lastContact:'2026-02-20', influence:'Low', notes:'New to cannabis, eager to learn' },
+  { id:'c23', name:'Tessa Brown', role:'Budtender', storeId:'s7', email:'tessa.b@sessions.ca', phone:'250-555-0182', lastContact:'2026-03-04', influence:'Medium', notes:'Pre-roll specialist, push Jeeter' },
+  { id:'c24', name:'Noah Kim', role:'Budtender', storeId:'s8', email:'noah.k@bccs.ca', phone:'250-555-0192', lastContact:'2026-03-07', influence:'Medium', notes:'Cross-sells well with edibles' },
+];
+
+const skus = [
+  // listingRequirement = minimum units/week (BC-wide) to avoid BCLDB delist review
+  // Flower 3.5g ~15/wk baseline; premium/larger formats lower; pre-rolls ~25/wk; edibles ~8/wk
+  { id:'sku1',  brandId:'b1', name:'Broken Coast Amnesia Haze 3.5g',      category:'Flower',         price:38.99, unitsWk:342, trend:12,  storeCount:28, listingRequirement:15  },
+  { id:'sku2',  brandId:'b1', name:'Broken Coast Ruxton 7g',               category:'Flower',         price:72.99, unitsWk:198, trend:6,   storeCount:22, listingRequirement:12  },
+  { id:'sku3',  brandId:'b2', name:'Tantalus Sunset Sherbert 3.5g',        category:'Flower',         price:28.99, unitsWk:310, trend:9,   storeCount:24, listingRequirement:15  },
+  { id:'sku4',  brandId:'b2', name:'Tantalus Skunk Haze 3.5g',             category:'Flower',         price:26.99, unitsWk:195, trend:-3,  storeCount:20, listingRequirement:200 }, // declining — set above unitsWk to flag
+  { id:'sku5',  brandId:'b3', name:'Whistler Bubba Kush 3.5g',             category:'Flower',         price:44.99, unitsWk:214, trend:-2,  storeCount:18, listingRequirement:250 }, // declining — set above unitsWk to flag
+  { id:'sku6',  brandId:'b4', name:'GA Tiger Cake 28g',                    category:'Flower',         price:99.99, unitsWk:280, trend:15,  storeCount:26, listingRequirement:12  },
+  { id:'sku7',  brandId:'b4', name:'GA Blue Dream 3.5g',                   category:'Flower',         price:22.99, unitsWk:180, trend:4,   storeCount:24, listingRequirement:15  },
+  { id:'sku8',  brandId:'b5', name:'SHRED Tropic Thunder 7g',              category:'Milled Flower',  price:24.99, unitsWk:420, trend:18,  storeCount:22, listingRequirement:15  },
+  { id:'sku9',  brandId:'b5', name:'SHRED X Rip Strip 3pk',                category:'Pre-roll',       price:14.99, unitsWk:380, trend:22,  storeCount:20, listingRequirement:25  },
+  { id:'sku10', brandId:'b6', name:'Spinach GMO Cookies 3.5g',             category:'Flower',         price:26.99, unitsWk:260, trend:8,   storeCount:25, listingRequirement:15  },
+  { id:'sku11', brandId:'b6', name:'Spinach Atomic Sour Grapefruit Vape',  category:'Vape',           price:34.99, unitsWk:190, trend:5,   storeCount:22, listingRequirement:10  },
+  { id:'sku12', brandId:'b7', name:'Jeeter Baby Jeeter Infused 5pk',       category:'Infused Pre-roll',price:29.99, unitsWk:240, trend:35,  storeCount:15, listingRequirement:25  },
+  { id:'sku13', brandId:'b7', name:'Jeeter XL Infused 1g',                 category:'Infused Pre-roll',price:18.99, unitsWk:160, trend:28,  storeCount:14, listingRequirement:175 }, // near-threshold — set above unitsWk to flag
+  { id:'sku14', brandId:'b8', name:'Grön Pearls Mixed Berry 10pk',         category:'Edible',         price:8.99,  unitsWk:310, trend:14,  storeCount:20, listingRequirement:8   },
+  { id:'sku15', brandId:'b8', name:'Grön Dark Chocolate Bar',              category:'Edible',         price:7.49,  unitsWk:220, trend:10,  storeCount:18, listingRequirement:8   },
+  { id:'sku16', brandId:'b3', name:'Whistler Sour Diesel Vape 0.5g',       category:'Vape',           price:49.99, unitsWk:120, trend:-8,  storeCount:14, listingRequirement:130 }, // declining vape — set above unitsWk to flag
+];
+
+// samples schema: id, skuId, brandId, storeId, repId, dateOut, cost, revenueGen, status,
+//                 lotNumber, productionDate, exciseStamp (4 letters + 5 digits, e.g. BCAB12345)
+const samples = [
+  { id:'smp1',  skuId:'sku1',  brandId:'b1', storeId:'s1',  repId:'r1', dateOut:'2026-03-12', cost:42, revenueGen:680,  status:'reordered',    lotNumber:'LOT-BC-2601-18', productionDate:'2026-01-18', exciseStamp:'BCAB12345' },
+  { id:'smp2',  skuId:'sku3',  brandId:'b2', storeId:'s2',  repId:'r1', dateOut:'2026-03-10', cost:28, revenueGen:0,    status:'pending',      lotNumber:'LOT-TL-2602-04', productionDate:'2026-02-04', exciseStamp:'BCTL98201' },
+  { id:'smp3',  skuId:'sku5',  brandId:'b3', storeId:'s3',  repId:'r2', dateOut:'2026-03-08', cost:55, revenueGen:420,  status:'reordered',    lotNumber:'LOT-WC-2601-29', productionDate:'2026-01-29', exciseStamp:'BCWC55310' },
+  { id:'smp4',  skuId:'sku6',  brandId:'b4', storeId:'s5',  repId:'r1', dateOut:'2026-03-06', cost:65, revenueGen:1200, status:'reordered',    lotNumber:'LOT-GA-2602-11', productionDate:'2026-02-11', exciseStamp:'BCGA77401' },
+  { id:'smp5',  skuId:'sku8',  brandId:'b5', storeId:'s3',  repId:'r2', dateOut:'2026-03-05', cost:25, revenueGen:0,    status:'pending',      lotNumber:'LOT-SH-2602-20', productionDate:'2026-02-20', exciseStamp:'BCSH44102' },
+  { id:'smp6',  skuId:'sku12', brandId:'b7', storeId:'s1',  repId:'r1', dateOut:'2026-03-04', cost:30, revenueGen:890,  status:'reordered',    lotNumber:'LOT-JT-2601-15', productionDate:'2026-01-15', exciseStamp:'BCJT33219' },
+  { id:'smp7',  skuId:'sku14', brandId:'b8', storeId:'s6',  repId:'r1', dateOut:'2026-03-03', cost:9,  revenueGen:210,  status:'reordered',    lotNumber:'LOT-GR-2602-08', productionDate:'2026-02-08', exciseStamp:'BCGR21507' },
+  { id:'smp8',  skuId:'sku10', brandId:'b6', storeId:'s9',  repId:'r2', dateOut:'2026-03-01', cost:27, revenueGen:0,    status:'pending',      lotNumber:'LOT-SP-2602-25', productionDate:'2026-02-25', exciseStamp:'BCSP66830' },
+  { id:'smp9',  skuId:'sku9',  brandId:'b5', storeId:'s7',  repId:'r3', dateOut:'2026-02-28', cost:15, revenueGen:340,  status:'reordered',    lotNumber:'LOT-SH-2602-14', productionDate:'2026-02-14', exciseStamp:'BCSH44088' },
+  { id:'smp10', skuId:'sku2',  brandId:'b1', storeId:'s4',  repId:'r2', dateOut:'2026-02-25', cost:73, revenueGen:0,    status:'expired',      lotNumber:'LOT-BC-2601-10', productionDate:'2026-01-10', exciseStamp:'BCAB12298' },
+  { id:'smp11', skuId:'sku15', brandId:'b8', storeId:'s10', repId:'r3', dateOut:'2026-02-22', cost:8,  revenueGen:0,    status:'not_converted',lotNumber:'LOT-GR-2601-22', productionDate:'2026-01-22', exciseStamp:'BCGR21444' },
+  { id:'smp12', skuId:'sku7',  brandId:'b4', storeId:'s12', repId:'r3', dateOut:'2026-02-20', cost:23, revenueGen:0,    status:'not_converted',lotNumber:'LOT-GA-2601-30', productionDate:'2026-01-30', exciseStamp:'BCGA77388' },
+  { id:'smp13', skuId:'sku13', brandId:'b7', storeId:'s8',  repId:'r3', dateOut:'2026-03-02', cost:19, revenueGen:560,  status:'reordered',    lotNumber:'LOT-JT-2602-03', productionDate:'2026-02-03', exciseStamp:'BCJT33177' },
+  { id:'smp14', skuId:'sku11', brandId:'b6', storeId:'s11', repId:'r2', dateOut:'2026-03-03', cost:35, revenueGen:0,    status:'pending',      lotNumber:'LOT-SP-2602-17', productionDate:'2026-02-17', exciseStamp:'BCSP66791' },
+  { id:'smp15', skuId:'sku4',  brandId:'b2', storeId:'s5',  repId:'r1', dateOut:'2026-02-18', cost:27, revenueGen:380,  status:'reordered',    lotNumber:'LOT-TL-2601-28', productionDate:'2026-01-28', exciseStamp:'BCTL98155' },
+  { id:'smp16', skuId:'sku6',  brandId:'b4', storeId:'s9',  repId:'r2', dateOut:'2026-02-15', cost:65, revenueGen:0,    status:'expired',      lotNumber:'LOT-GA-2601-20', productionDate:'2026-01-20', exciseStamp:'BCGA77350' },
+  { id:'smp17', skuId:'sku8',  brandId:'b5', storeId:'s10', repId:'r3', dateOut:'2026-03-11', cost:25, revenueGen:0,    status:'pending',      lotNumber:'LOT-SH-2603-01', productionDate:'2026-03-01', exciseStamp:'BCSH44211' },
+  { id:'smp18', skuId:'sku12', brandId:'b7', storeId:'s3',  repId:'r2', dateOut:'2026-03-14', cost:30, revenueGen:0,    status:'pending',      lotNumber:'LOT-JT-2602-28', productionDate:'2026-02-28', exciseStamp:'BCJT33240' },
+];
+
+const weeklyRevenue = [
+  { week:'Jan 27', total:52100 },{ week:'Feb 3', total:55800 },{ week:'Feb 10', total:54200 },{ week:'Feb 17', total:58600 },
+  { week:'Feb 24', total:62200 },{ week:'Mar 3', total:65800 },{ week:'Mar 10', total:68100 },{ week:'Mar 17', total:71900 },
+];
+
+const promos = [
+  { id:'p1', name:'SHRED Spring Shredder', brandId:'b5', type:'BOGO', storeIds:['s1','s2','s3','s5','s6'], start:'2026-03-15', end:'2026-03-31', budget:2400, expectedLift:18, actualLift:22, status:'active' },
+  { id:'p2', name:'Jeeter Launch Party', brandId:'b7', type:'Launch', storeIds:['s1','s3','s4','s5'], start:'2026-03-20', end:'2026-03-27', budget:3200, expectedLift:35, actualLift:null, status:'active' },
+  { id:'p3', name:'Grön Gummy Giveaway', brandId:'b8', type:'Sample', storeIds:['s1','s2','s3','s5','s6','s9','s10'], start:'2026-03-22', end:'2026-04-05', budget:1800, expectedLift:12, actualLift:null, status:'upcoming' },
+  { id:'p4', name:'Broken Coast 420 Premium', brandId:'b1', type:'Discount', storeIds:['s1','s2','s3','s4','s5','s6','s7','s8'], start:'2026-04-15', end:'2026-04-22', budget:5000, expectedLift:25, actualLift:null, status:'planned' },
+  { id:'p5', name:'GA Value Days', brandId:'b4', type:'Price Drop', storeIds:['s3','s5','s7','s9','s10','s11'], start:'2026-04-01', end:'2026-04-14', budget:1500, expectedLift:15, actualLift:null, status:'planned' },
+  { id:'p6', name:'Tantalus Sungrown Showcase', brandId:'b2', type:'Demo', storeIds:['s1','s2','s4','s6'], start:'2026-03-08', end:'2026-03-14', budget:2000, expectedLift:10, actualLift:14, status:'completed' },
+  { id:'p7', name:'Spinach Vape Week', brandId:'b6', type:'Bundle', storeIds:['s1','s3','s5','s9','s11'], start:'2026-04-07', end:'2026-04-13', budget:1600, expectedLift:12, actualLift:null, status:'planned' },
+];
+
+const shelfShareData = {
+  'Metro Van': { ours:38, competitor1:22, competitor2:18, competitor3:12, other:10 },
+  'Vancouver Island': { ours:32, competitor1:25, competitor2:20, competitor3:13, other:10 },
+  'Fraser Valley': { ours:28, competitor1:24, competitor2:22, competitor3:15, other:11 },
+};
+const shelfCompetitors = { competitor1:'Organigram', competitor2:'Tilray', competitor3:'Canopy Growth' };
+
+const stockMatrix = {
+  s1:{b1:4,b2:3,b3:2,b4:2,b5:3,b6:2,b7:2,b8:0}, s2:{b1:3,b2:2,b3:0,b4:2,b5:2,b6:3,b7:0,b8:3},
+  s3:{b1:3,b2:2,b3:2,b4:3,b5:3,b6:2,b7:2,b8:3}, s4:{b1:2,b2:2,b3:1,b4:0,b5:0,b6:0,b7:2,b8:0},
+  s5:{b1:4,b2:3,b3:3,b4:2,b5:3,b6:3,b7:1,b8:2}, s6:{b1:3,b2:2,b3:2,b4:2,b5:2,b6:2,b7:0,b8:2},
+  s7:{b1:2,b2:0,b3:0,b4:2,b5:2,b6:2,b7:0,b8:0}, s8:{b1:3,b2:2,b3:2,b4:2,b5:2,b6:2,b7:1,b8:2},
+  s9:{b1:2,b2:2,b3:0,b4:2,b5:2,b6:2,b7:0,b8:2}, s10:{b1:1,b2:0,b3:0,b4:2,b5:2,b6:2,b7:0,b8:0},
+  s11:{b1:2,b2:2,b3:0,b4:2,b5:2,b6:2,b7:0,b8:0}, s12:{b1:0,b2:1,b3:1,b4:0,b5:2,b6:0,b7:1,b8:1},
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════════════════════════
+const $=id=>document.getElementById(id);
+const getBrand=id=>brands.find(b=>b.id===id);
+const getStore=id=>stores.find(s=>s.id===id);
+const getRep=id=>reps.find(r=>r.id===id);
+const getSku=id=>skus.find(s=>s.id===id);
+const fmt$=n=>'$'+n.toLocaleString();
+const fmtK=n=>n>=1000?'$'+(n/1000).toFixed(1)+'K':fmt$(n);
+const daysBetween=(a,b)=>Math.round((b-a)/(1000*60*60*24));
+const trendHtml=t=>{
+  if(t>0)return`<span class="trend-up" data-tip="4-week velocity trend: +${t}% growth. Strong momentum — consider upselling and expanding facings.">↑ ${t}%</span>`;
+  if(t<0)return`<span class="trend-down" data-tip="4-week velocity trend: ${t}% decline. Monitor closely — may need promo support or shelf review.">↓ ${Math.abs(t)}%</span>`;
+  return`<span class="trend-flat" data-tip="4-week velocity trend: flat. No growth or decline detected.">→ flat</span>`;
+};
+const statusPill=s=>{
+  if(s==='active')return'<span class="pill pill-green" data-tip="Active — currently performing within expected range.">Active</span>';
+  if(s==='watch')return'<span class="pill pill-amber" data-tip="Watch — underperforming or showing decline. Needs attention this visit cycle.">Watch</span>';
+  return'<span class="pill pill-stone">'+s+'</span>';
+};
+const samplePill=s=>{
+  const m={reordered:'pill-green',pending:'pill-amber',expired:'pill-red',not_converted:'pill-stone'};
+  const l={reordered:'Reordered',pending:'Pending',expired:'Expired',not_converted:'No Convert'};
+  const tips={
+    reordered:'Reordered — sample converted to a purchase order. Counts toward ROV calculation.',
+    pending:'Pending — sample is out but no reorder decision yet. Follow up if >14 days.',
+    expired:'Expired — sample window passed (>30d) without reorder. Review why and adjust approach.',
+    not_converted:'Not Converted — store declined to reorder. Capture reason for future strategy.',
+  };
+  return`<span class="pill ${m[s]||'pill-stone'}" data-tip="${tips[s]||s}">${l[s]||s}</span>`;
+};
+const promoPill=s=>{
+  const m={active:'pill-green',upcoming:'pill-blue',planned:'pill-stone',completed:'pill-amber'};
+  return`<span class="pill ${m[s]||'pill-stone'}">${s.charAt(0).toUpperCase()+s.slice(1)}</span>`;
+};
+const influencePill=i=>{
+  const tips={High:'High Influence — decision-maker or top hand-seller. Prioritize relationship.',Medium:'Medium Influence — involved in buying or recommendations. Worth nurturing.',Low:'Low Influence — limited sway over purchasing decisions at this location.'};
+  const m={High:'pill-green',Medium:'pill-amber',Low:'pill-stone'};
+  return`<span class="pill ${m[i]||'pill-stone'}" data-tip="${tips[i]||''}">${i}</span>`;
+};
+
+// ── Tier pill with tooltip ─────────────────────────────────────────────────
+const TIER_TIPS = {
+  A: 'Tier A — Top stores by revenue (>$25K/30d). Full SKU push, priority visits, premium placement.',
+  B: 'Tier B — Mid-range stores ($12K–$25K/30d). Standard cadence, growth potential with right support.',
+  C: 'Tier C — Developing stores (<$12K/30d). Monitor closely; consider targeted promos or de-listing review.',
+};
+const tierPill = t => `<span class="pill tier-${t.toLowerCase()}" data-tip="${TIER_TIPS[t]||t}">${t}</span>`;
+
+// ── Notes (localStorage) ───────────────────────────────────────────────────
+const NOTES_KEY = 'gw_notes_v1';
+const getNotes = () => { try { return JSON.parse(localStorage.getItem(NOTES_KEY)||'{}'); } catch(e){return{};} };
+const getNote = key => getNotes()[key] || '';
+const saveNote = (key, val) => { const n=getNotes(); n[key]=val; localStorage.setItem(NOTES_KEY, JSON.stringify(n)); };
+let _drawerNoteKey = '';
+window.saveCurrentNote = () => {
+  const ta = $('drawer-note-area');
+  if (!ta || !_drawerNoteKey) return;
+  saveNote(_drawerNoteKey, ta.value);
+  const saved = $('drawer-note-saved');
+  if (saved) { saved.style.display='block'; setTimeout(()=>saved.style.display='none', 2000); }
+};
+function noteSection(key) {
+  const existing = getNote(key);
+  _drawerNoteKey = key;
+  return `<div class="drawer-section">
+    <div class="drawer-section-title">Field Notes</div>
+    <textarea id="drawer-note-area" class="note-area" placeholder="Add visit notes, observations, follow-ups…">${existing}</textarea>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+      <button class="btn btn-primary btn-sm" onclick="saveCurrentNote()">Save Note</button>
+      <span class="note-saved" id="drawer-note-saved">Saved ✓</span>
+    </div>
+  </div>`;
+}
+
+// ── Tooltip engine ─────────────────────────────────────────────────────────
+(function(){
+  const tip = $('gw-tip');
+  document.addEventListener('mouseover', e => {
+    const el = e.target.closest('[data-tip]');
+    if (el && tip) { tip.textContent = el.dataset.tip; tip.style.display = 'block'; }
+  });
+  document.addEventListener('mousemove', e => {
+    if (tip && tip.style.display === 'block') {
+      tip.style.left = Math.min(e.clientX + 14, window.innerWidth - 250) + 'px';
+      tip.style.top  = (e.clientY - 42) + 'px';
+    }
+  });
+  document.addEventListener('mouseout', e => {
+    if (!e.target.closest('[data-tip]') && tip) tip.style.display = 'none';
+  });
+})();
+
+function calcPriority(store){
+  const daysAgo=daysBetween(new Date(store.lastVisit),TODAY);
+  const tierWeight={A:10,B:5,C:2}[store.tier]||2;
+  const score=(daysAgo*2)+(10-Math.min(store.stockDays,10))+(store.pendingSamples*5)+tierWeight;
+  return{daysAgo,score,stockDays:store.stockDays,pendingSamples:store.pendingSamples};
+}
+
+function reorderPct(sku){
+  if(sku.trend>=15)return 95;if(sku.trend>=5)return 75;if(sku.trend>=0)return 55;if(sku.trend>=-10)return 35;return 15;
+}
+function reorderColor(pct){if(pct>=75)return'var(--green-500)';if(pct>=50)return'var(--amber)';return'var(--red)';}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SAFE CHART HELPER (destroys existing before re-creating)
+// ══════════════════════════════════════════════════════════════════════════════
+const _charts = {};
+function safeChart(id, cfg) {
+  if (_charts[id]) { try { _charts[id].destroy(); } catch(e){} }
+  _charts[id] = new Chart($(id), cfg);
+  return _charts[id];
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DISMISSED ACTIONS STATE
+// ══════════════════════════════════════════════════════════════════════════════
+const _dismissedActions = new Set();
+window.dismissAction = key => { _dismissedActions.add(key); buildStrategy(); };
+window.restoreActions = () => { _dismissedActions.clear(); buildStrategy(); };
+
+// ══════════════════════════════════════════════════════════════════════════════
+// UNITS / REVENUE TOGGLE STATE
+// ══════════════════════════════════════════════════════════════════════════════
+let unitMode = false; // false = show revenue ($), true = show units (#)
+window.toggleUnitMode = function() {
+  unitMode = !unitMode;
+  const btn = $('units-rev-toggle');
+  if (btn) {
+    btn.textContent = unitMode ? '# UNITS' : '$ REV';
+    btn.style.background = unitMode ? 'var(--green-800)' : 'var(--stone-700)';
+    btn.style.color = unitMode ? 'var(--green-200)' : 'var(--stone-200)';
+  }
+  buildDashboard();
+  buildBrands();
+  buildStores();
+  buildSales();
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TODAY'S ROUTE STATE
+// ══════════════════════════════════════════════════════════════════════════════
+let _todaysRoute = null;
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MODAL + TOAST UTILS
+// ══════════════════════════════════════════════════════════════════════════════
+const visitLog = [];
+function openModal()  { $('modal-overlay').classList.add('open'); }
+function closeModal() { $('modal-overlay').classList.remove('open'); }
+
+function showToast(msg) {
+  const t = $('gw-toast');
+  t.textContent = msg; t.style.display = 'block'; t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.style.display='none',300); }, 2800);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// LOG VISIT MODAL
+// ══════════════════════════════════════════════════════════════════════════════
+function openLogVisit(preStoreId) {
+  const storeOpts = stores.map(s =>
+    `<option value="${s.id}" ${s.id===preStoreId?'selected':''}>${s.name} (${s.region})</option>`
+  ).join('');
+  $('modal-title').textContent = 'Log Store Visit';
+  $('modal-body').innerHTML = `
+    <div class="form-group">
+      <label class="form-label">Store *</label>
+      <select class="form-control" id="lv-store" onchange="window._updateVisitForm()">
+        <option value="">— Select store —</option>${storeOpts}
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Visit Date</label>
+        <input class="form-control" type="date" id="lv-date" value="2026-03-20" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Stock Days Remaining</label>
+        <input class="form-control" type="number" id="lv-stock" min="0" max="90" placeholder="e.g. 14" />
+      </div>
+    </div>
+    <div class="form-group" id="lv-contacts-wrap" style="display:none">
+      <label class="form-label">Contacts Met</label>
+      <div class="check-list" id="lv-contacts"></div>
+    </div>
+    <div class="form-group" id="lv-brands-wrap" style="display:none">
+      <label class="form-label">Brands Discussed</label>
+      <div class="check-list" id="lv-brands"></div>
+    </div>
+    <div class="form-group" id="lv-commitments-wrap" style="display:none">
+      <label class="form-label" style="display:flex;align-items:center;gap:6px">
+        Listing Commitments
+        <span style="font-weight:400;font-size:11px;color:var(--stone-400)">— check SKUs the buyer committed to stock</span>
+      </label>
+      <div class="check-list" id="lv-commitments" style="max-height:180px;overflow-y:auto"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Visit Notes</label>
+      <textarea class="form-control note-area" id="lv-notes" placeholder="Shelf state, buyer feedback, follow-up actions…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="window._submitLogVisit()">Save Visit</button>
+    </div>`;
+  openModal();
+  if (preStoreId) window._updateVisitForm();
+}
+
+window._updateVisitForm = function() {
+  const storeId = $('lv-store').value; if (!storeId) return;
+  const store = getStore(storeId);
+  $('lv-stock').value = store.stockDays;
+  const storeContacts = contacts.filter(c => c.storeId === storeId);
+  $('lv-contacts-wrap').style.display = 'block';
+  $('lv-contacts').innerHTML = storeContacts.length
+    ? storeContacts.map(c => `<label><input type="checkbox" value="${c.id}" checked /><span>${c.name}</span><span style="color:var(--stone-400);margin-left:4px">${c.role}</span></label>`).join('')
+    : '<span style="font-size:12px;color:var(--stone-400)">No contacts on file for this store</span>';
+  const storeBrands = brands.filter(b => store.brandIds.includes(b.id));
+  $('lv-brands-wrap').style.display = 'block';
+  $('lv-brands').innerHTML = storeBrands.map(b =>
+    `<label><input type="checkbox" value="${b.id}" checked /><div class="entity-avatar" style="width:16px;height:16px;border-radius:3px;font-size:7px;background:${b.color}">${b.logo}</div><span>${b.name}</span></label>`
+  ).join('');
+  // Listing commitments: all SKUs belonging to this store's brands
+  const storeSKUs = skus.filter(s => store.brandIds.includes(s.brandId));
+  $('lv-commitments-wrap').style.display = storeSKUs.length ? 'block' : 'none';
+  $('lv-commitments').innerHTML = storeSKUs.map(s => {
+    const b = getBrand(s.brandId);
+    return `<label style="align-items:center">
+      <input type="checkbox" value="${s.id}" class="lv-commit-cb" />
+      <div class="entity-avatar" style="width:16px;height:16px;border-radius:3px;font-size:7px;background:${b?.color||'#555'}">${b?.logo||'?'}</div>
+      <span style="flex:1">${s.name}</span>
+      <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--stone-400);margin-left:4px">$${s.price.toFixed(2)}</span>
+    </label>`;
+  }).join('');
+};
+
+window._submitLogVisit = function() {
+  const storeId = $('lv-store').value;
+  if (!storeId) { showToast('Please select a store'); return; }
+  const store   = getStore(storeId);
+  const date    = $('lv-date').value || '2026-03-20';
+  const stock   = parseInt($('lv-stock').value);
+  const notes   = $('lv-notes').value.trim();
+  // Listing commitments — collect checked SKU ids
+  const commitCBs = document.querySelectorAll('.lv-commit-cb:checked');
+  const listingCommitments = Array.from(commitCBs).map(cb => ({ skuId: cb.value, committed: true }));
+  store.lastVisit  = date;
+  if (!isNaN(stock)) store.stockDays = stock;
+  if (notes) saveNote('store_'+storeId, notes);
+  visitLog.push({ storeId, date, stockDays: stock, notes, listingCommitments });
+  buildDashboard(); buildRoute(); buildStrategy();
+  closeModal();
+  const commitCount = listingCommitments.length;
+  showToast(`Visit to ${store.name} logged ✓${commitCount ? ` · ${commitCount} listing commitment${commitCount>1?'s':''}` : ''}`);
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// LOG SAMPLE MODAL
+// ══════════════════════════════════════════════════════════════════════════════
+function openLogSample() {
+  const skuOpts  = skus.map(s  => { const b=getBrand(s.brandId); return `<option value="${s.id}" data-price="${s.price}">${b?.name||''} — ${s.name} ($${s.price.toFixed(2)})</option>`; }).join('');
+  const storeOpts= stores.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+  const repOpts  = reps.map(r   => `<option value="${r.id}">${r.name}</option>`).join('');
+  // default follow-up = 14 days out
+  $('modal-title').textContent = 'Log Sample Drop';
+  $('modal-body').innerHTML = `
+    <div class="form-group">
+      <label class="form-label">Product / SKU *</label>
+      <select class="form-control" id="ls-sku" onchange="window._updateSampleCost()">
+        <option value="">— Select product —</option>${skuOpts}
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Store *</label>
+        <select class="form-control" id="ls-store"><option value="">— Select store —</option>${storeOpts}</select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Rep</label>
+        <select class="form-control" id="ls-rep">${repOpts}</select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Date Out</label>
+        <input class="form-control" type="date" id="ls-date" value="2026-03-20" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Sample Cost ($)</label>
+        <input class="form-control" type="number" id="ls-cost" min="0" step="0.01" placeholder="auto-filled from SKU" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Lot Number</label>
+        <input class="form-control" type="text" id="ls-lot" placeholder="e.g. LOT-BC-2603-01" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Production Date</label>
+        <input class="form-control" type="date" id="ls-proddate" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Excise Stamp # <span style="color:var(--stone-400);font-weight:400;font-size:10px">(4 letters + 5 digits)</span></label>
+        <input class="form-control" type="text" id="ls-excise" placeholder="e.g. BCAB12345" maxlength="9" pattern="[A-Za-z]{4}[0-9]{5}" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Follow-up Date</label>
+        <input class="form-control" type="date" id="ls-followup" value="2026-04-03" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Pitch Notes</label>
+      <textarea class="form-control note-area" id="ls-notes" placeholder="Buyer reaction, pitch angle, next steps…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="window._submitLogSample()">Log Sample</button>
+    </div>`;
+  openModal();
+}
+
+window._updateSampleCost = function() {
+  const sel = $('ls-sku'); if (!sel) return;
+  const opt = sel.options[sel.selectedIndex];
+  const price = parseFloat(opt?.dataset?.price);
+  if (!isNaN(price)) $('ls-cost').value = price.toFixed(2);
+};
+
+window._submitLogSample = function() {
+  const skuId   = $('ls-sku').value;
+  const storeId = $('ls-store').value;
+  if (!skuId || !storeId) { showToast('Select a product and store'); return; }
+  const sku   = getSku(skuId);
+  const store = getStore(storeId);
+  const cost  = parseFloat($('ls-cost').value) || sku?.price || 0;
+  const newSample = {
+    id: 'smp_new_' + Date.now(),
+    skuId, brandId: sku?.brandId||'', storeId,
+    repId:        $('ls-rep').value,
+    dateOut:      $('ls-date').value || '2026-03-20',
+    cost, revenueGen: 0,
+    status:       'pending',
+    lotNumber:    $('ls-lot').value.trim() || null,
+    productionDate: $('ls-proddate').value || null,
+    exciseStamp:  $('ls-excise').value.trim().toUpperCase() || null,
+  };
+  samples.push(newSample);
+  store.pendingSamples = (store.pendingSamples||0) + 1;
+  const notes = $('ls-notes').value.trim();
+  if (notes) saveNote('store_'+storeId, notes);
+  buildSamples(); buildStrategy(); buildRoute();
+  closeModal();
+  showToast(`Sample logged at ${store.name} ✓`);
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// UPDATE SAMPLE STATUS
+// ══════════════════════════════════════════════════════════════════════════════
+window.updateSampleStatus = function(id, newStatus) {
+  const s = samples.find(x => x.id === id); if (!s) return;
+  s.status = newStatus;
+  if (newStatus === 'reordered') {
+    const sku = getSku(s.skuId);
+    s.revenueGen = sku ? Math.round(sku.price * 9) : 200;
+    const store = getStore(s.storeId);
+    if (store) store.pendingSamples = Math.max(0,(store.pendingSamples||1)-1);
+  }
+  buildSamples(); buildStrategy(); buildDashboard();
+  showToast(newStatus==='reordered' ? 'Sample marked as Reordered ✓' : 'Sample marked as Not Converted');
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PLAN TODAY'S ROUTE
+// ══════════════════════════════════════════════════════════════════════════════
+function openPlanRoute() {
+  const ranked = [...stores].map(s => ({...s, p:calcPriority(s)})).sort((a,b) => b.p.score - a.p.score);
+  $('modal-title').textContent = "Plan Today's Route";
+  $('modal-body').innerHTML = `
+    <div style="font-size:13px;color:var(--stone-500);margin-bottom:12px">Stores ranked by priority score. Pre-selected: score ≥ 18.</div>
+    <div class="check-list" style="max-height:400px">
+      ${ranked.map((s,i) => {
+        const col = s.p.score>=30?'var(--red)':s.p.score>=18?'var(--amber)':'var(--green-600)';
+        return `<label style="padding:9px 4px;border-bottom:1px solid var(--stone-100);align-items:flex-start;gap:10px">
+          <input type="checkbox" name="route-store" value="${s.id}" ${s.p.score>=18?'checked':''} style="margin-top:4px"/>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:22px;height:22px;border-radius:50%;background:${col};color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div>
+              <strong style="font-size:13px;color:var(--stone-900)">${s.name}</strong>
+            </div>
+            <div style="font-size:11px;color:var(--stone-400);margin-top:2px;padding-left:30px">${s.region} · ${s.p.daysAgo}d since visit · ${s.p.stockDays}d stock · ${tierPill(s.tier)}</div>
+          </div>
+          <span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:${col};flex-shrink:0">${s.p.score}</span>
+        </label>`;
+      }).join('')}
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="window._lockInRoute()">Lock In Route</button>
+    </div>`;
+  openModal();
+}
+
+window._lockInRoute = function() {
+  const ids = [...document.querySelectorAll('input[name="route-store"]:checked')].map(el => el.value);
+  if (!ids.length) { showToast('Select at least one store'); return; }
+  _todaysRoute = ids.map(id => getStore(id)).filter(Boolean);
+  closeModal();
+  document.querySelector('[data-page="route"]').click();
+  buildRoute();
+  showToast(`Route locked — ${ids.length} store${ids.length>1?'s':''} planned`);
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ADD PROMO
+// ══════════════════════════════════════════════════════════════════════════════
+function openAddPromo() {
+  const brandOpts  = brands.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+  const typeOpts   = ['BOGO','Discount','Demo','Bundle','Launch','Sample Drop','Price Drop'].map(t => `<option>${t}</option>`).join('');
+  $('modal-title').textContent = 'Add Promotion';
+  $('modal-body').innerHTML = `
+    <div class="form-group">
+      <label class="form-label">Promo Name *</label>
+      <input class="form-control" id="ap-name" placeholder="e.g. SHRED Spring Shredder" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Brand *</label>
+        <select class="form-control" id="ap-brand"><option value="">— Select brand —</option>${brandOpts}</select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Promo Type</label>
+        <select class="form-control" id="ap-type">${typeOpts}</select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Start Date</label>
+        <input class="form-control" type="date" id="ap-start" value="2026-03-20" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">End Date</label>
+        <input class="form-control" type="date" id="ap-end" value="2026-04-03" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Budget ($)</label>
+        <input class="form-control" type="number" id="ap-budget" min="0" placeholder="e.g. 1500" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Expected Lift (%)</label>
+        <input class="form-control" type="number" id="ap-lift" min="0" max="100" placeholder="e.g. 15" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Select Stores</label>
+      <div class="check-list" style="max-height:160px">
+        ${stores.map(s => `<label><input type="checkbox" name="ap-store" value="${s.id}"/><span>${s.name}</span><span style="color:var(--stone-400);margin-left:4px;font-size:11px">${s.region}</span></label>`).join('')}
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="window._submitAddPromo()">Add Promo</button>
+    </div>`;
+  openModal();
+}
+
+window._submitAddPromo = function() {
+  const name    = $('ap-name').value.trim();
+  const brandId = $('ap-brand').value;
+  if (!name || !brandId) { showToast('Promo name and brand are required'); return; }
+  const storeIds = [...document.querySelectorAll('input[name="ap-store"]:checked')].map(el => el.value);
+  const start = $('ap-start').value;
+  const newPromo = {
+    id: 'p_new_'+Date.now(), name, brandId,
+    type:         $('ap-type').value,
+    storeIds,
+    start,        end:       $('ap-end').value,
+    budget:       parseFloat($('ap-budget').value)||0,
+    expectedLift: parseFloat($('ap-lift').value)||0,
+    actualLift:   null,
+    status: start <= '2026-03-20' ? 'active' : 'upcoming',
+  };
+  promos.push(newPromo);
+  buildPromos(); buildStrategy();
+  closeModal();
+  showToast(`Promo "${name}" added ✓`);
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ADD / EDIT STORE FORM
+// ══════════════════════════════════════════════════════════════════════════════
+function openStoreForm(id) {
+  const s = id ? getStore(id) : null;
+  const repOpts    = reps.map(r    => `<option value="${r.id}" ${s?.rep===r.id?'selected':''}>${r.name}</option>`).join('');
+  const regionOpts = ['Metro Van','Vancouver Island','Fraser Valley'].map(r => `<option ${s?.region===r?'selected':''}>${r}</option>`).join('');
+  const tierOpts   = ['A','B','C'].map(t => `<option ${s?.tier===t?'selected':''}>${t}</option>`).join('');
+  const statusOpts = ['active','watch'].map(x => `<option ${s?.status===x?'selected':''}>${x}</option>`).join('');
+  $('modal-title').textContent = s ? `Edit: ${s.name}` : 'Add Store';
+  $('modal-body').innerHTML = `
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Store Name *</label>
+        <input class="form-control" id="sf-name" value="${s?.name||''}" placeholder="e.g. Sessions Cannabis Robson"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Chain</label>
+        <input class="form-control" id="sf-chain" value="${s?.chain||''}" placeholder="e.g. Sessions"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">City</label>
+        <input class="form-control" id="sf-city" value="${s?.city||''}"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Region</label>
+        <select class="form-control" id="sf-region">${regionOpts}</select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Tier <span data-tip="${TIER_TIPS.A+' / '+TIER_TIPS.B}" style="cursor:help;color:var(--stone-400);font-size:10px;font-weight:700;border:1px solid var(--stone-300);border-radius:3px;padding:0 4px">?</span></label>
+        <select class="form-control" id="sf-tier">${tierOpts}</select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-control" id="sf-status">${statusOpts}</select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Assigned Rep</label>
+      <select class="form-control" id="sf-rep">${repOpts}</select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="window._submitStoreForm('${id||''}')">Save</button>
+    </div>`;
+  openModal();
+}
+window._submitStoreForm = function(id) {
+  const name = $('sf-name').value.trim();
+  if (!name) { showToast('Store name is required'); return; }
+  if (id) {
+    const s = getStore(id);
+    s.name = name; s.chain = $('sf-chain').value.trim(); s.city = $('sf-city').value.trim();
+    s.region = $('sf-region').value; s.tier = $('sf-tier').value;
+    s.status = $('sf-status').value; s.rep = $('sf-rep').value;
+    buildStores(); buildRoute(); buildDashboard(); buildStrategy();
+    closeModal(); showToast(`${name} updated ✓`); openStoreDrawer(id);
+  } else {
+    const ns = { id:'s_new_'+Date.now(), name, chain:$('sf-chain').value.trim(), city:$('sf-city').value.trim(),
+      region:$('sf-region').value, rep:$('sf-rep').value, brandIds:[], skus:0,
+      lastVisit:'2026-03-20', status:$('sf-status').value, revenue30d:0, units30d:0,
+      tier:$('sf-tier').value, stockDays:14, pendingSamples:0 };
+    stores.push(ns);
+    document.querySelector('[data-page="stores"] .nav-count').textContent = stores.length;
+    buildStores(); buildRoute();
+    closeModal(); showToast(`${name} added ✓`);
+  }
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ADD / EDIT BRAND FORM
+// ══════════════════════════════════════════════════════════════════════════════
+function openBrandForm(id) {
+  const b = id ? getBrand(id) : null;
+  const repOpts  = reps.map(r => `<option value="${r.id}" ${b?.repId===r.id?'selected':''}>${r.name}</option>`).join('');
+  const cats     = ['Premium Flower','Sun-grown Flower','Organic Premium','Value Flower','Milled Flower / Pre-rolls','Mid-range Flower / Vapes','Infused Pre-rolls','Edibles / Gummies'];
+  const catOpts  = cats.map(c => `<option ${b?.category===c?'selected':''}>${c}</option>`).join('');
+  const statOpts = ['active','watch'].map(x => `<option ${b?.status===x?'selected':''}>${x}</option>`).join('');
+  $('modal-title').textContent = b ? `Edit: ${b.name}` : 'Add Brand';
+  $('modal-body').innerHTML = `
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Brand Name *</label>
+        <input class="form-control" id="bf-name" value="${b?.name||''}" placeholder="e.g. Broken Coast"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Logo Initials</label>
+        <input class="form-control" id="bf-logo" value="${b?.logo||''}" maxlength="3" placeholder="e.g. BC"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <select class="form-control" id="bf-cat">${catOpts}</select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Province</label>
+        <input class="form-control" id="bf-province" value="${b?.province||'BC'}"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-control" id="bf-status">${statOpts}</select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Rep</label>
+        <select class="form-control" id="bf-rep">${repOpts}</select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Brand Colour</label>
+        <input class="form-control" type="color" id="bf-color" value="${b?.color||'#2e7a19'}" style="height:38px;padding:4px"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="window._submitBrandForm('${id||''}')">Save</button>
+    </div>`;
+  openModal();
+}
+window._submitBrandForm = function(id) {
+  const name = $('bf-name').value.trim();
+  if (!name) { showToast('Brand name is required'); return; }
+  const logo = $('bf-logo').value.trim().toUpperCase() || name.substring(0,2).toUpperCase();
+  if (id) {
+    const b = getBrand(id);
+    b.name = name; b.logo = logo; b.category = $('bf-cat').value;
+    b.province = $('bf-province').value.trim(); b.status = $('bf-status').value;
+    b.repId = $('bf-rep').value; b.color = $('bf-color').value;
+    buildBrands(); buildDashboard(); buildStrategy();
+    closeModal(); showToast(`${name} updated ✓`); openBrandDrawer(id);
+  } else {
+    const nb = { id:'b_new_'+Date.now(), name, logo, category:$('bf-cat').value,
+      province:$('bf-province').value.trim(), repId:$('bf-rep').value,
+      status:$('bf-status').value, color:$('bf-color').value,
+      skus:0, activeStores:0, revenue30d:0, units30d:0, revenuePrev:0, rank:brands.length+1 };
+    brands.push(nb);
+    document.querySelector('[data-page="brands"] .nav-count').textContent = brands.length;
+    buildBrands(); buildDashboard();
+    closeModal(); showToast(`${name} added ✓`);
+  }
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ADD / EDIT CONTACT FORM
+// ══════════════════════════════════════════════════════════════════════════════
+function openContactForm(id) {
+  const c = id ? contacts.find(x => x.id === id) : null;
+  const storeOpts = stores.map(s => `<option value="${s.id}" ${c?.storeId===s.id?'selected':''}>${s.name}</option>`).join('');
+  const roleOpts  = ['Buyer','Store Manager','Budtender'].map(r => `<option ${c?.role===r?'selected':''}>${r}</option>`).join('');
+  const infOpts   = ['High','Medium','Low'].map(i => `<option ${c?.influence===i?'selected':''}>${i}</option>`).join('');
+  $('modal-title').textContent = c ? `Edit: ${c.name}` : 'Add Contact';
+  $('modal-body').innerHTML = `
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Full Name *</label>
+        <input class="form-control" id="cf-name" value="${c?.name||''}"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <select class="form-control" id="cf-role">${roleOpts}</select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Store</label>
+      <select class="form-control" id="cf-store">
+        <option value="">— No store assigned —</option>${storeOpts}
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-control" type="email" id="cf-email" value="${c?.email||''}"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <input class="form-control" id="cf-phone" value="${c?.phone||''}"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Influence Level <span data-tip="High = decision-maker (buyer/manager). Medium = active recommender. Low = limited purchasing influence." style="cursor:help;color:var(--stone-400);font-size:10px;font-weight:700;border:1px solid var(--stone-300);border-radius:3px;padding:0 4px">?</span></label>
+      <select class="form-control" id="cf-influence">${infOpts}</select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Background Notes</label>
+      <textarea class="form-control note-area" id="cf-notes" placeholder="Buying preferences, personality, key insights…">${c?.notes||''}</textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="window._submitContactForm('${id||''}')">Save</button>
+    </div>`;
+  openModal();
+}
+window._submitContactForm = function(id) {
+  const name = $('cf-name').value.trim();
+  if (!name) { showToast('Contact name is required'); return; }
+  if (id) {
+    const c = contacts.find(x => x.id === id);
+    c.name = name; c.role = $('cf-role').value; c.storeId = $('cf-store').value;
+    c.email = $('cf-email').value.trim(); c.phone = $('cf-phone').value.trim();
+    c.influence = $('cf-influence').value; c.notes = $('cf-notes').value.trim();
+    buildContacts();
+    closeModal(); showToast(`${name} updated ✓`); openContactDrawer(id);
+  } else {
+    const nc = { id:'c_new_'+Date.now(), name, role:$('cf-role').value,
+      storeId:$('cf-store').value, email:$('cf-email').value.trim(),
+      phone:$('cf-phone').value.trim(), lastContact:'2026-03-20',
+      influence:$('cf-influence').value, notes:$('cf-notes').value.trim() };
+    contacts.push(nc);
+    document.querySelector('[data-page="contacts"] .nav-count').textContent = contacts.length;
+    buildContacts();
+    closeModal(); showToast(`${name} added ✓`);
+  }
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// CONTACT DRAWER
+// ══════════════════════════════════════════════════════════════════════════════
+window.openContactDrawer = function(id) {
+  const c = contacts.find(x => x.id === id); if (!c) return;
+  const store = getStore(c.storeId);
+  const rep   = store ? getRep(store.rep) : null;
+  const storeSamples = samples.filter(s => s.storeId === c.storeId).slice(0,3);
+  $('drawer-title').innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;width:100%"><div><div>${c.name}</div><div style="font-size:12px;font-weight:400;color:var(--stone-400)">${c.role} · ${store?.name||'—'}</div></div><button class="btn btn-outline btn-sm" onclick="openContactForm('${id}')">Edit</button></div>`;
+  $('drawer-body').innerHTML = `
+    <div class="drawer-section"><div class="drawer-section-title">Contact Info</div>
+      <div class="detail-row"><span class="detail-key">Role</span><span class="detail-val"><span class="pill ${c.role==='Buyer'?'pill-blue':c.role==='Store Manager'?'pill-green':'pill-stone'}">${c.role}</span></span></div>
+      <div class="detail-row"><span class="detail-key">Influence</span><span class="detail-val">${influencePill(c.influence)}</span></div>
+      <div class="detail-row"><span class="detail-key">Store</span><span class="detail-val" style="text-align:right">${store?.name||'—'}</span></div>
+      <div class="detail-row"><span class="detail-key">Region</span><span class="detail-val">${store?.region||'—'}</span></div>
+      <div class="detail-row"><span class="detail-key">Account Rep</span><span class="detail-val">${rep?.name||'—'}</span></div>
+    </div>
+    <div class="drawer-section"><div class="drawer-section-title">Contact Details</div>
+      <div class="detail-row"><span class="detail-key">Email</span><span class="detail-val" style="color:var(--blue);font-size:12px">${c.email}</span></div>
+      <div class="detail-row"><span class="detail-key">Phone</span><span class="detail-val" style="font-family:'DM Mono',monospace;font-size:12px">${c.phone}</span></div>
+      <div class="detail-row"><span class="detail-key">Last Contact</span><span class="detail-val" style="font-family:'DM Mono',monospace;font-size:12px">${c.lastContact}</span></div>
+    </div>
+    <div class="drawer-section"><div class="drawer-section-title">Background</div>
+      <div style="font-size:13px;color:var(--stone-600);line-height:1.6;padding:4px 0">${c.notes||'<span style="color:var(--stone-400)">No background notes on file.</span>'}</div>
+    </div>
+    ${storeSamples.length ? `<div class="drawer-section"><div class="drawer-section-title">Recent Store Samples</div>
+      ${storeSamples.map(s=>{const sku=getSku(s.skuId);return`<div class="detail-row"><span class="detail-key" style="font-size:12px">${sku?.name?.substring(0,28)||'—'}</span><span class="detail-val" style="display:flex;gap:6px">${samplePill(s.status)}<span style="font-family:'DM Mono',monospace;font-size:11px">$${s.cost}</span></span></div>`;}).join('')}
+    </div>` : ''}
+    ${noteSection('contact_'+id)}`;
+  openDrawer();
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════════════════════════════════════
+document.querySelectorAll('.nav-item[data-page]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    $('page-'+btn.dataset.page).classList.add('active');
+  });
+});
+$('drawer-overlay').addEventListener('click',closeDrawer);
+$('drawer-close-btn').addEventListener('click',closeDrawer);
+
+// ── Mobile sidebar toggle ─────────────────────────────────────────────────
+function openSidebar()  { $('app-sidebar').classList.add('mobile-open');    $('sidebar-backdrop').classList.add('open'); }
+function closeSidebar() { $('app-sidebar').classList.remove('mobile-open'); $('sidebar-backdrop').classList.remove('open'); }
+$('hamburger-btn').addEventListener('click', () => $('app-sidebar').classList.contains('mobile-open') ? closeSidebar() : openSidebar());
+$('sidebar-backdrop').addEventListener('click', closeSidebar);
+// Close sidebar on nav selection (mobile UX)
+document.querySelectorAll('.nav-item[data-page]').forEach(btn => btn.addEventListener('click', () => { if(window.innerWidth <= 900) closeSidebar(); }));
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STRATEGY DATA
+// ══════════════════════════════════════════════════════════════════════════════
+const forecastWeeks = [
+  {week:'Mar 24', total:74900, forecast:true},
+  {week:'Mar 31', total:77800, forecast:true},
+  {week:'Apr 7',  total:80600, forecast:true},
+  {week:'Apr 14', total:83400, forecast:true},
+];
+
+const activities = [
+  {rep:'r1', type:'visit',  store:'s1',  date:'2026-03-18', note:'Restocked Broken Coast & Jeeter. New premium facing secured at front of store.'},
+  {rep:'r2', type:'sample', store:'s3',  date:'2026-03-14', note:'Dropped Jeeter Baby Jeeter 5pk. Buyer Sarah very interested — follow up Mar 21.'},
+  {rep:'r1', type:'visit',  store:'s6',  date:'2026-03-14', note:'Raj confirmed exclusive Spring promo for Grön. Expand edibles shelf Apr 1.'},
+  {rep:'r2', type:'visit',  store:'s4',  date:'2026-03-16', note:'Emma expanding shelf for premium tier. Pitch full Broken Coast lineup next visit.'},
+  {rep:'r3', type:'sample', store:'s8',  date:'2026-03-08', note:'Left Jeeter XL. Noah keen to cross-sell with edibles — potential Grön bundle.'},
+  {rep:'r1', type:'promo',  store:'s2',  date:'2026-03-15', note:'SHRED Spring Shredder live. Store manager excited, running staff training.'},
+  {rep:'r3', type:'visit',  store:'s7',  date:'2026-03-05', note:'Dan needs Q1 data before committing to Spinach reorder. Send sell sheet.'},
+  {rep:'r2', type:'visit',  store:'s9',  date:'2026-03-02', note:'Olivia confirming expansion. Full portfolio pitch opportunity — book for Mar 25.'},
+];
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STRATEGY INTEL
+// ══════════════════════════════════════════════════════════════════════════════
+function brandHealthScore(b) {
+  const revChg = (b.revenue30d - b.revenuePrev) / b.revenuePrev * 100;
+  const revScore = Math.min(100, Math.max(0, 50 + revChg * 2.5));
+  const brandSkuList = skus.filter(s => s.brandId === b.id);
+  const avgVel = brandSkuList.length ? brandSkuList.reduce((s,x) => s+x.trend, 0) / brandSkuList.length : 0;
+  const velScore = Math.min(100, Math.max(0, 50 + avgVel * 2.5));
+  const coverageScore = Math.min(100, (b.activeStores / stores.length) * 100);
+  const bSamples = samples.filter(s => s.brandId === b.id);
+  const sCost = bSamples.reduce((s,x) => s+x.cost, 0);
+  const sRev  = bSamples.reduce((s,x) => s+x.revenueGen, 0);
+  const rovScore = sCost > 0 ? Math.min(100, (sRev / sCost) * 10) : 50;
+  const overall = Math.round(revScore*0.35 + velScore*0.25 + coverageScore*0.25 + rovScore*0.15);
+  return { overall, revScore:Math.round(revScore), velScore:Math.round(velScore), coverageScore:Math.round(coverageScore), rovScore:Math.round(rovScore), revChg:Math.round(revChg) };
+}
+
+function healthColor(score) {
+  if (score >= 75) return '#2e7a19';
+  if (score >= 55) return '#c87d1a';
+  return '#b83030';
+}
+
+function buildStrategy() {
+  // ── Computed aggregates ──────────────────────────────────────────────────
+  const totalRev = stores.reduce((s,x) => s+x.revenue30d, 0);
+  const tierMult = {A:1.08, B:1.18, C:1.35};
+  const totalTarget = stores.reduce((s,x) => s + x.revenue30d * (tierMult[x.tier]||1.15), 0);
+  const revGap = Math.round(totalTarget - totalRev);
+
+  const pendingSamples = samples.filter(s => s.status === 'pending');
+  const totalSampleCost = samples.reduce((s,x) => s+x.cost, 0);
+  const totalSampleRev  = samples.reduce((s,x) => s+x.revenueGen, 0);
+  const overallROV = totalSampleCost > 0 ? totalSampleRev / totalSampleCost : 5;
+  const pipelineVal = Math.round(pendingSamples.reduce((s,x) => s + x.cost * overallROV, 0));
+
+  const urgentStores = stores.filter(s => calcPriority(s).score >= 30);
+  const lastWeek = weeklyRevenue[weeklyRevenue.length-1].total;
+  const firstWeek = weeklyRevenue[0].total;
+  const weeklyGrowthRate = Math.pow(lastWeek / firstWeek, 1/(weeklyRevenue.length-1));
+  const q2ProjectedMonthly = Math.round(lastWeek * weeklyGrowthRate * 4 * 4); // 4 weeks × 4 months
+
+  // ── Metric cards ─────────────────────────────────────────────────────────
+  $('strategy-metrics').innerHTML = `
+    <div class="metric-card">
+      <div class="metric-label">Revenue Gap to Target <span data-tip="Difference between current 30d revenue and the growth target for each store tier (A +8%, B +18%, C +35%). Closing this gap is the primary strategic objective." style="cursor:help;color:var(--stone-400);font-size:10px;font-weight:700;border:1px solid var(--stone-300);border-radius:3px;padding:0 4px">?</span></div>
+      <div class="metric-val" style="color:var(--red)">${fmtK(revGap)}</div>
+      <div class="metric-sub">target ${fmtK(Math.round(totalTarget))} · actual ${fmtK(totalRev)}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Sample Pipeline Value <span data-tip="Estimated revenue potential from all pending samples, calculated as: Pending Sample Cost × Overall ROV (${overallROV.toFixed(1)}x). This is money on the table awaiting follow-up." style="cursor:help;color:var(--stone-400);font-size:10px;font-weight:700;border:1px solid var(--stone-300);border-radius:3px;padding:0 4px">?</span></div>
+      <div class="metric-val" style="color:var(--green-600)">${fmtK(pipelineVal)}</div>
+      <div class="metric-sub">${pendingSamples.length} pending samples · ${overallROV.toFixed(1)}x avg ROV</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Urgent Visits</div>
+      <div class="metric-val" style="color:var(--red)">${urgentStores.length}</div>
+      <div class="metric-sub">priority score ≥ 30 · act this week</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Q2 Revenue Projection <span data-tip="Extrapolated from 8-week compound weekly growth rate of ${((weeklyGrowthRate-1)*100).toFixed(1)}%. Assumes current trajectory holds." style="cursor:help;color:var(--stone-400);font-size:10px;font-weight:700;border:1px solid var(--stone-300);border-radius:3px;padding:0 4px">?</span></div>
+      <div class="metric-val">${fmtK(q2ProjectedMonthly)}</div>
+      <div class="metric-sub">projected Q2 total · ${((weeklyGrowthRate-1)*100).toFixed(1)}% wk growth</div>
+    </div>`;
+
+  // ── Priority Actions ──────────────────────────────────────────────────────
+  const actions = [];
+
+  // Urgent visits
+  urgentStores.sort((a,b) => calcPriority(b).score - calcPriority(a).score).forEach(s => {
+    const p = calcPriority(s);
+    const dailyRev = Math.round(s.revenue30d / 30);
+    actions.push({
+      priority: 'critical', icon: '🏪', storeId: s.id,
+      title: `Visit ${s.name}`,
+      detail: `${p.daysAgo} days since last visit · ${p.stockDays}d stock remaining · ${p.pendingSamples} pending samples`,
+      impact: `At-risk revenue: ~${fmtK(dailyRev * p.stockDays)} if stocked out`,
+    });
+  });
+
+  // Overdue pending samples (> 14 days)
+  pendingSamples.filter(s => daysBetween(new Date(s.dateOut), TODAY) >= 14).forEach(s => {
+    const daysOut = daysBetween(new Date(s.dateOut), TODAY);
+    const store = getStore(s.storeId); const sku = getSku(s.skuId);
+    actions.push({
+      priority: 'high', icon: '🧪', key: 'sample_'+s.id,
+      title: `Follow up: ${sku?.name?.substring(0,28)||'Sample'} @ ${store?.name||''}`,
+      detail: `${daysOut} days since drop — decision window closing (max 30d)`,
+      impact: `Conversion potential: ~${fmtK(Math.round(s.cost * overallROV))} at ${overallROV.toFixed(1)}x ROV`,
+    });
+  });
+
+  // OOS gaps at top-5 revenue stores × top-3 revenue brands
+  const topStores = [...stores].sort((a,b) => b.revenue30d - a.revenue30d).slice(0,5);
+  const topBrands = [...brands].sort((a,b) => b.revenue30d - a.revenue30d).slice(0,3);
+  topStores.forEach(s => {
+    topBrands.forEach(b => {
+      if ((stockMatrix[s.id]?.[b.id] ?? 0) === 0) {
+        const estMiss = Math.round(b.revenue30d / b.activeStores * 0.6);
+        actions.push({
+          priority: 'med', icon: '📦', key: 'oos_'+s.id+'_'+b.id,
+          title: `${b.name} OOS at ${s.name}`,
+          detail: `Not stocked · ${fmtK(b.revenue30d / b.activeStores)} avg/store/30d · pitch this visit`,
+          impact: `Est. monthly revenue miss: ${fmtK(estMiss)}`,
+        });
+      }
+    });
+  });
+
+  // Declining SKUs needing support
+  skus.filter(s => s.trend <= -8).forEach(s => {
+    const b = getBrand(s.brandId);
+    actions.push({
+      priority: 'low', icon: '📉', key: 'decline_'+s.id,
+      title: `Declining: ${s.name}`,
+      detail: `${s.trend}% 4-week trend · ${s.storeCount} stores · consider promo or de-listing`,
+      impact: `${s.unitsWk} units/wk — action before further erosion`,
+    });
+  });
+
+  const priorityOrder = {critical:0, high:1, med:2, low:3};
+  actions.sort((a,b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+
+  const visible = actions.filter(a => !_dismissedActions.has(a.key));
+  const dismissedCount = actions.length - visible.length;
+
+  const priorityLabel = {critical:'URGENT', high:'HIGH', med:'MED', low:'LOW'};
+  const priorityTip = {
+    critical: 'Critical — immediate action required this visit cycle. Revenue directly at risk.',
+    high:     'High — action needed within 2–3 days. Pipeline value or relationship at stake.',
+    med:      'Medium — address this week. Distribution gap or growth opportunity.',
+    low:      'Low — monitor and plan. Trend risk that needs a strategy before it worsens.',
+  };
+  $('strategy-actions').innerHTML = (visible.length ? visible.slice(0,8).map(a => `
+    <div class="action-item action-${a.priority}" ${a.storeId?`onclick="openLogVisit('${a.storeId}')" style="cursor:pointer"`:''}>
+      <div class="action-icon" style="background:${a.priority==='critical'?'var(--red-light)':a.priority==='high'?'var(--amber-light)':a.priority==='med'?'var(--blue-light)':'var(--green-100)'}">${a.icon}</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+          <div class="action-title">${a.title}</div>
+          <span class="pill ${a.priority==='critical'?'pill-red':a.priority==='high'?'pill-amber':a.priority==='med'?'pill-blue':'pill-green'}" style="font-size:9px;padding:1px 5px" data-tip="${priorityTip[a.priority]}">${priorityLabel[a.priority]}</span>
+        </div>
+        <div class="action-detail">${a.detail}</div>
+        <div class="action-impact">↑ ${a.impact}</div>
+      </div>
+      <button onclick="event.stopPropagation();dismissAction('${a.key}')" data-tip="Dismiss this action" style="background:none;border:none;cursor:pointer;color:var(--stone-300);font-size:16px;padding:2px 4px;border-radius:4px;line-height:1;flex-shrink:0;margin-top:2px" onmouseover="this.style.color='var(--stone-500)'" onmouseout="this.style.color='var(--stone-300)'">✕</button>
+    </div>`).join('')
+    : `<div style="text-align:center;padding:24px;color:var(--stone-400);font-size:13px">✓ All actions addressed${dismissedCount?' ('+dismissedCount+' dismissed)':''}</div>`)
+  + (dismissedCount ? `<div style="text-align:right;margin-top:6px"><button onclick="restoreActions()" style="font-size:11px;color:var(--stone-400);background:none;border:none;cursor:pointer;text-decoration:underline">Restore ${dismissedCount} dismissed</button></div>` : '');
+
+  // ── Revenue Forecast chart ────────────────────────────────────────────────
+  const allWeeks = [...weeklyRevenue, ...forecastWeeks];
+  const splitIdx = weeklyRevenue.length - 1;
+  const actualData  = allWeeks.map((w,i) => i <= splitIdx ? w.total : null);
+  const forecastData = allWeeks.map((w,i) => i >= splitIdx ? w.total : null);
+
+  safeChart('chart-forecast', {
+    type: 'line',
+    data: {
+      labels: allWeeks.map(w => w.week),
+      datasets: [
+        { label:'Actual', data:actualData, borderColor:'#3b9620', backgroundColor:'rgba(59,150,32,0.07)', borderWidth:2, pointRadius:3, fill:true, tension:0.35, spanGaps:false },
+        { label:'Forecast', data:forecastData, borderColor:'#3b9620', backgroundColor:'rgba(59,150,32,0.03)', borderWidth:2, borderDash:[5,4], pointRadius:3, pointStyle:'circle', fill:true, tension:0.35, spanGaps:false },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:true, position:'top', labels:{font:{size:11}, boxWidth:20} },
+        tooltip:{ callbacks:{ label: ctx => ctx.dataset.label+': $'+(ctx.raw/1000).toFixed(1)+'K' }}},
+      scales:{
+        x:{ grid:{display:false}, ticks:{font:{size:10}, color:'#7a8470'} },
+        y:{ grid:{color:'#f0f0ec'}, ticks:{font:{size:11}, color:'#7a8470', callback:v=>'$'+(v/1000).toFixed(0)+'K'} }
+      }
+    }
+  });
+
+  // ── Activity feed ─────────────────────────────────────────────────────────
+  const typeColor = {visit:'var(--green-500)', sample:'var(--amber)', promo:'var(--blue)'};
+  const typeLabel = {visit:'Visit', sample:'Sample Drop', promo:'Promo'};
+  $('strategy-activity').innerHTML = activities.map(a => {
+    const rep = getRep(a.rep); const store = getStore(a.store);
+    return `<div class="activity-row">
+      <div class="activity-dot" style="background:${typeColor[a.type]||'#888'}"></div>
+      <div style="flex:1">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:1px">
+          <span style="font-size:11px;font-weight:700;color:var(--stone-600)">${a.date}</span>
+          <span class="pill pill-stone" style="font-size:9px;padding:1px 5px">${typeLabel[a.type]||a.type}</span>
+          <span style="font-size:11px;color:var(--stone-500)">${rep?.name||''}</span>
+        </div>
+        <div style="font-weight:700;font-size:12px;color:var(--stone-800)">${store?.name||a.store}</div>
+        <div style="font-size:11px;color:var(--stone-400);line-height:1.4;margin-top:1px">${a.note}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // ── Brand Health Scorecard ────────────────────────────────────────────────
+  $('brand-health-grid').innerHTML = brands.map(b => {
+    const h = brandHealthScore(b);
+    const col = healthColor(h.overall);
+    const dims = [
+      {label:'Rev Trend', val:h.revScore, tip:'Revenue momentum score. Based on 30d vs prior 30d change.'},
+      {label:'Velocity', val:h.velScore, tip:'SKU sell-through velocity trend averaged across all active SKUs.'},
+      {label:'Coverage', val:h.coverageScore, tip:'Store distribution coverage as % of total tracked stores.'},
+      {label:'Sample ROV', val:h.rovScore, tip:'Sample return on value score. Based on revenue generated per $1 of sample cost.'},
+    ];
+    return `<div class="health-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div class="health-score-ring" style="background:${col}" data-tip="Overall health score (0–100). Weighted: Rev Trend 35%, Velocity 25%, Coverage 25%, ROV 15%. ${h.overall>=75?'Healthy ✓':h.overall>=55?'Watch — needs support':'Needs attention — review strategy'}.">${h.overall}</div>
+        <div>
+          <div style="font-weight:700;font-size:13px;color:var(--stone-900)">${b.name}</div>
+          <div style="font-size:11px;color:var(--stone-400)">${b.category}</div>
+          <div style="font-size:11px;margin-top:2px">${trendHtml(h.revChg)}</div>
+        </div>
+      </div>
+      ${dims.map(d => `<div style="margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--stone-400);margin-bottom:2px">
+          <span data-tip="${d.tip}">${d.label}</span><span style="font-family:'DM Mono',monospace;color:var(--stone-600)">${d.val}</span>
+        </div>
+        <div class="health-bar-track"><div class="health-bar-fill" style="width:${d.val}%;background:${healthColor(d.val)}"></div></div>
+      </div>`).join('')}
+    </div>`;
+  }).join('');
+
+  // ── Stock Risk table ──────────────────────────────────────────────────────
+  const atRisk = stores.filter(s => s.stockDays <= 3).sort((a,b) => a.stockDays - b.stockDays);
+  $('stock-risk-tbody').innerHTML = atRisk.map(s => {
+    const dailyRev = Math.round(s.revenue30d / 30);
+    const atRiskRev = dailyRev * s.stockDays;
+    const cls = s.stockDays <= 1 ? 'pill-red' : 'pill-amber';
+    return `<tr style="cursor:pointer" onclick="openStoreDrawer('${s.id}')">
+      <td><div class="entity-name">${s.name}</div><div class="entity-sub">${s.chain}</div></td>
+      <td>${s.region}</td>
+      <td>${tierPill(s.tier)}</td>
+      <td><span class="pill ${cls}" data-tip="Estimated days of stock remaining based on current sell-through rate.">${s.stockDays}d</span></td>
+      <td style="font-family:'DM Mono',monospace">${fmtK(dailyRev)}/d</td>
+      <td><strong style="color:var(--red)">${fmtK(atRiskRev)}</strong></td>
+      <td><button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openLogVisit('${s.id}')">Log Visit</button></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--stone-400);padding:20px">No critical stock alerts — all stores have 4+ days of inventory</td></tr>';
+
+  // ── Delist Threat table ───────────────────────────────────────────────────
+  const delistThreats = skus.filter(s => s.listingRequirement && s.unitsWk < s.listingRequirement)
+    .sort((a,b) => (a.unitsWk/a.listingRequirement) - (b.unitsWk/b.listingRequirement));
+  if ($('delist-threat-body')) {
+    if (delistThreats.length === 0) {
+      $('delist-threat-body').innerHTML = '<div style="text-align:center;padding:20px;color:var(--green-600);font-size:13px">✓ All SKUs meeting listing requirements</div>';
+    } else {
+      $('delist-threat-body').innerHTML = `
+        <div style="font-size:12px;color:var(--stone-400);margin-bottom:10px">${delistThreats.length} SKU${delistThreats.length>1?'s':''} below BCLDB minimum threshold — take action before next review cycle.</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>SKU</th><th>Brand</th><th>Category</th><th>Units/wk</th><th>Minimum</th><th>Gap</th><th>Trend</th><th>Stores</th></tr></thead>
+          <tbody>${delistThreats.map(s => {
+            const b = getBrand(s.brandId);
+            const gap = s.listingRequirement - s.unitsWk;
+            const pct = Math.round(s.unitsWk / s.listingRequirement * 100);
+            const severity = pct < 70 ? 'pill-red' : 'pill-amber';
+            return `<tr>
+              <td><div class="entity-name" style="font-size:13px">${s.name}</div></td>
+              <td><div style="display:flex;align-items:center;gap:6px"><div class="entity-avatar" style="width:18px;height:18px;border-radius:3px;font-size:8px;background:${b?.color||'#555'}">${b?.logo||'?'}</div><span style="font-size:12px">${b?.name||''}</span></div></td>
+              <td><span class="pill pill-stone" style="font-size:10px">${s.category}</span></td>
+              <td><strong style="font-family:'DM Mono',monospace;color:var(--red)">${s.unitsWk}</strong></td>
+              <td style="font-family:'DM Mono',monospace;color:var(--stone-400)">${s.listingRequirement}</td>
+              <td><span class="pill ${severity}" data-tip="${pct}% of minimum — ${gap} units/wk below threshold">−${gap} (${pct}%)</span></td>
+              <td>${trendHtml(s.trend)}</td>
+              <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--stone-400)">${s.storeCount}</td>
+            </tr>`;
+          }).join('')}</tbody>
+        </table></div>`;
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════════════════════════════════════
+function buildDashboard(){
+  const totalRev=brands.reduce((s,b)=>s+b.revenue30d,0);
+  const totalUnits=brands.reduce((s,b)=>s+b.units30d,0);
+  const totalPrevRev=brands.reduce((s,b)=>s+b.revenuePrev,0);
+  const revChg=Math.round((totalRev-totalPrevRev)/totalPrevRev*100);
+  const reordered=samples.filter(s=>s.status==='reordered').length;
+  const rovRate=Math.round(reordered/samples.length*100);
+  $('dash-metrics').innerHTML=`
+    <div class="metric-card"><div class="metric-label">Total Revenue (30d)</div><div class="metric-val">${fmtK(totalRev)}</div><div class="metric-sub"><span class="metric-up">↑ ${revChg}%</span> vs prior</div></div>
+    <div class="metric-card"><div class="metric-label">Units Sold (30d)</div><div class="metric-val">${totalUnits.toLocaleString()}</div><div class="metric-sub">across ${stores.length} stores</div></div>
+    <div class="metric-card"><div class="metric-label">Active Stores</div><div class="metric-val">${stores.filter(s=>s.status==='active').length}</div><div class="metric-sub">of ${stores.length} total</div></div>
+    <div class="metric-card"><div class="metric-label">Sample ROV Rate</div><div class="metric-val">${rovRate}%</div><div class="metric-sub">conversion to reorder</div></div>`;
+
+  safeChart('chart-revenue',{type:'line',data:{labels:weeklyRevenue.map(w=>w.week),datasets:[{label:'Total',data:weeklyRevenue.map(w=>w.total),borderColor:'#3b9620',backgroundColor:'rgba(59,150,32,0.07)',borderWidth:2,pointRadius:3,fill:true,tension:0.35}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#7a8470'}},y:{grid:{color:'#f0f0ec'},ticks:{font:{size:11},color:'#7a8470',callback:v=>'$'+(v/1000).toFixed(0)+'K'}}}}});
+
+  const brandMetric=b=>unitMode?b.units30d:b.revenue30d;
+  const brandMetricFmt=b=>unitMode?b.units30d.toLocaleString():fmtK(b.revenue30d);
+  const maxBrandVal=Math.max(...brands.map(b=>brandMetric(b)));
+  if($('brand-rev-card-title')) $('brand-rev-card-title').textContent = unitMode ? 'Units by Brand (30d)' : 'Revenue by Brand (30d)';
+  if($('top-stores-card-title')) $('top-stores-card-title').textContent = unitMode ? 'Top Stores by Units' : 'Top Stores by Revenue';
+  if($('top-stores-metric-th')) $('top-stores-metric-th').textContent = unitMode ? 'Units (30d)' : 'Rev (30d)';
+  $('brand-rev-bars').innerHTML=brands.map(b=>`<div class="prog-row"><div class="prog-label" style="display:flex;align-items:center;gap:6px"><div class="entity-avatar" style="width:20px;height:20px;border-radius:4px;font-size:9px;background:${b.color}">${b.logo}</div>${b.name}</div><div class="prog-track"><div class="prog-fill" style="width:${Math.round(brandMetric(b)/maxBrandVal*100)}%;background:${b.color}"></div></div><div class="prog-val">${brandMetricFmt(b)}</div></div>`).join('');
+
+  const sorted=[...stores].sort((a,b)=>unitMode?(b.units30d-a.units30d):(b.revenue30d-a.revenue30d)).slice(0,6);
+  $('top-stores-tbody').innerHTML=sorted.map((s,i)=>`<tr style="cursor:pointer" onclick="openStoreDrawer('${s.id}')"><td class="rank-badge">${i+1}</td><td><div class="entity-name">${s.name}</div><div class="entity-sub">${s.chain}</div></td><td>${s.region}</td><td><strong>${unitMode?s.units30d.toLocaleString():fmtK(s.revenue30d)}</strong></td><td>${tierPill(s.tier)}</td></tr>`).join('');
+
+  const prioritized=[...stores].map(s=>({...s,p:calcPriority(s)})).sort((a,b)=>b.p.score-a.p.score).slice(0,5);
+  $('dash-priority-alerts').innerHTML=prioritized.map(s=>{
+    const cls=s.p.score>=30?'priority-high':s.p.score>=18?'priority-med':'priority-low';
+    return`<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--stone-50)"><div class="priority-score ${cls}" data-tip="Priority Score = (Days Since Visit × 2) + (10 − Stock Days) + (Pending Samples × 5) + Tier Weight (A=10, B=5, C=2). Score ≥30 = Urgent.">${s.p.score}</div><div><div class="entity-name">${s.name}</div><div class="entity-sub">${s.p.daysAgo}d ago · ${s.p.stockDays}d stock · ${s.p.pendingSamples} samples pending</div></div></div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ROUTE PLANNER
+// ══════════════════════════════════════════════════════════════════════════════
+function buildRoute(filter='all'){
+  const regions=['all',...new Set(stores.map(s=>s.region))];
+  $('route-filters').innerHTML=regions.map(r=>`<button class="filter-chip ${r===filter?'active':''}" onclick="window._filterRoute('${r}')">${r==='all'?'All Regions':r}</button>`).join('');
+
+  // Today's Route Banner
+  const banner = $('route-today-banner');
+  if (_todaysRoute && _todaysRoute.length) {
+    const completed = _todaysRoute.filter(s => visitLog.some(v => v.storeId===s.id && v.date==='2026-03-20')).length;
+    banner.innerHTML = `<div class="card" style="border-left:4px solid var(--green-500);margin-bottom:16px;background:var(--green-50)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="card-title" style="margin:0;color:var(--green-800)">Today's Route — ${completed}/${_todaysRoute.length} Completed</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="openPlanRoute()">Edit Route</button>
+          <button class="btn btn-sm" style="background:var(--stone-100);color:var(--stone-500);border:none" onclick="_todaysRoute=null;buildRoute()">Clear</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${_todaysRoute.map((s,i) => {
+          const done = visitLog.some(v => v.storeId===s.id && v.date==='2026-03-20');
+          return `<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:6px;background:${done?'var(--green-100)':'#fff'};border:1px solid ${done?'var(--green-300)':'var(--stone-200)'};cursor:pointer" onclick="${done?`openStoreDrawer('${s.id}')`:`openLogVisit('${s.id}')`}">
+            <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--stone-400)">${i+1}</span>
+            <span style="font-size:12px;font-weight:700;color:${done?'var(--green-700)':'var(--stone-800)'}">${s.name.split(' ').slice(0,3).join(' ')}</span>
+            ${done?'<span style="color:var(--green-600);font-size:13px">✓</span>':''}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  } else {
+    banner.innerHTML = '';
+  }
+
+  let filtered=filter==='all'?stores:stores.filter(s=>s.region===filter);
+  const ranked=filtered.map(s=>({...s,p:calcPriority(s)})).sort((a,b)=>b.p.score-a.p.score);
+
+  const urgent=ranked.filter(s=>s.p.score>=30).length;
+  const soon=ranked.filter(s=>s.p.score>=18&&s.p.score<30).length;
+  $('route-metrics').innerHTML=`
+    <div class="metric-card"><div class="metric-label">Urgent Visits</div><div class="metric-val" style="color:var(--red)">${urgent}</div><div class="metric-sub">Score ≥ 30</div></div>
+    <div class="metric-card"><div class="metric-label">Due Soon</div><div class="metric-val" style="color:var(--amber)">${soon}</div><div class="metric-sub">Score 18–29</div></div>
+    <div class="metric-card"><div class="metric-label">Low Stock Alerts</div><div class="metric-val">${ranked.filter(s=>s.p.stockDays<=2).length}</div><div class="metric-sub">≤ 2 days stock</div></div>
+    <div class="metric-card"><div class="metric-label">Pending Samples</div><div class="metric-val">${ranked.reduce((s,r)=>s+r.p.pendingSamples,0)}</div><div class="metric-sub">need follow-up</div></div>`;
+
+  $('route-tbody').innerHTML=ranked.map((s,i)=>{
+    const cls=s.p.score>=30?'priority-high':s.p.score>=18?'priority-med':'priority-low';
+    const reorder=Math.min(100,Math.round(s.p.score*2.5));
+    const rColor=reorder>=70?'var(--red)':reorder>=40?'var(--amber)':'var(--green-500)';
+    return`<tr style="cursor:pointer" onclick="openStoreDrawer('${s.id}')">
+      <td><div class="priority-score ${cls}" style="width:34px;height:34px;font-size:13px" data-tip="Visit rank #${i+1}. Priority Score = (Days Since Visit × 2) + (10 − Stock Days) + (Pending Samples × 5) + Tier Weight.">${i+1}</div></td>
+      <td><div class="entity-name">${s.name}</div><div class="entity-sub">${s.chain}</div></td>
+      <td>${s.region}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px">${s.lastVisit}</td>
+      <td><strong>${s.p.daysAgo}d</strong></td>
+      <td><span class="pill ${s.p.stockDays<=2?'pill-red':s.p.stockDays<=5?'pill-amber':'pill-green'}" data-tip="Estimated stock days remaining. ≤2d = critical restock risk.">${s.p.stockDays}d</span></td>
+      <td>${s.p.pendingSamples>0?'<span class="pill pill-amber" data-tip="Pending samples awaiting reorder decision. Follow up on each visit.">'+s.p.pendingSamples+'</span>':'<span class="pill pill-stone">0</span>'}</td>
+      <td>${tierPill(s.tier)}</td>
+      <td><strong style="font-family:'DM Mono',monospace" data-tip="Priority Score = (Days Since Visit × 2) + (10 − Stock Days) + (Pending Samples × 5) + Tier Weight (A=10, B=5, C=2)">${s.p.score}</strong></td>
+      <td><div style="display:flex;align-items:center;gap:6px"><div style="width:80px;height:6px;background:var(--stone-100);border-radius:3px;overflow:hidden"><div style="width:${reorder}%;height:100%;background:${rColor};border-radius:3px"></div></div><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--stone-400)">${reorder}%</span></div></td>
+    </tr>`;
+  }).join('');
+}
+window._filterRoute=f=>buildRoute(f);
+
+// ══════════════════════════════════════════════════════════════════════════════
+// BRANDS
+// ══════════════════════════════════════════════════════════════════════════════
+function buildBrands(filter='all'){
+  const cats=['all',...new Set(brands.map(b=>b.category))];
+  $('brand-filters').innerHTML=cats.map(c=>`<button class="filter-chip ${c===filter?'active':''}" onclick="window._buildBrands('${c}')">${c==='all'?'All Categories':c}</button>`).join('');
+  if($('brands-metric-th')) $('brands-metric-th').textContent = unitMode ? 'Units/30d ▲' : 'Revenue/30d';
+  if($('brands-units-th')) $('brands-units-th').style.fontWeight = unitMode ? '900' : '';
+  const filtered=filter==='all'?brands:brands.filter(b=>b.category===filter);
+  const sortedFiltered=[...filtered].sort((a,b)=>unitMode?(b.units30d-a.units30d):(a.rank-b.rank));
+  $('brands-tbody').innerHTML=sortedFiltered.map(b=>{
+    const chg=Math.round((b.revenue30d-b.revenuePrev)/b.revenuePrev*100);
+    return`<tr style="cursor:pointer" onclick="openBrandDrawer('${b.id}')">
+      <td class="rank-badge">${b.rank}</td>
+      <td><div style="display:flex;align-items:center;gap:10px"><div class="entity-avatar" style="background:${b.color}">${b.logo}</div><div><div class="entity-name">${b.name}</div><div class="entity-sub">${b.province}</div></div></div></td>
+      <td>${b.category}</td><td>${b.activeStores}</td>
+      <td ${unitMode?'style="font-weight:700;color:var(--stone-900)"':''}>${b.units30d.toLocaleString()}</td>
+      <td><strong ${unitMode?'style="color:var(--stone-400);font-weight:400"':''}>${fmtK(b.revenue30d)}</strong></td>
+      <td>${trendHtml(chg)}</td><td>${statusPill(b.status)}</td></tr>`;
+  }).join('');
+}
+window._buildBrands=buildBrands;
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STORES
+// ══════════════════════════════════════════════════════════════════════════════
+function buildStores(filter='all'){
+  const regions=['all',...new Set(stores.map(s=>s.region))];
+  $('store-filters').innerHTML=regions.map(r=>`<button class="filter-chip ${r===filter?'active':''}" onclick="window._buildStores('${r}')">${r==='all'?'All Regions':r}</button>`).join('');
+  if($('stores-metric-th')) $('stores-metric-th').textContent = unitMode ? 'Units (30d)' : 'Rev (30d)';
+  const filtered=filter==='all'?stores:stores.filter(s=>s.region===filter);
+  $('stores-tbody').innerHTML=filtered.map(s=>{
+    const rep=getRep(s.rep);
+    return`<tr style="cursor:pointer" onclick="openStoreDrawer('${s.id}')">
+      <td><div class="entity-name">${s.name}</div></td><td>${s.chain}</td><td>${s.city}</td>
+      <td><div style="display:flex;align-items:center;gap:6px"><div class="rep-avatar" style="width:24px;height:24px;font-size:10px;background:var(--green-700)">${rep?.initials||'?'}</div><span style="font-size:12px;color:var(--stone-500)">${rep?.name||''}</span></div></td>
+      <td>${s.skus}</td><td><strong>${unitMode?s.units30d.toLocaleString():fmtK(s.revenue30d)}</strong></td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--stone-400)">${s.lastVisit}</td>
+      <td>${tierPill(s.tier)}</td><td>${statusPill(s.status)}</td></tr>`;
+  }).join('');
+}
+window._buildStores=buildStores;
+
+// ══════════════════════════════════════════════════════════════════════════════
+// CONTACTS
+// ══════════════════════════════════════════════════════════════════════════════
+function buildContacts(filter='all'){
+  const roles=['all',...new Set(contacts.map(c=>c.role))];
+  $('contact-filters').innerHTML=roles.map(r=>`<button class="filter-chip ${r===filter?'active':''}" onclick="window._buildContacts('${r}')">${r==='all'?'All Roles':r}</button>`).join('');
+  const filtered=filter==='all'?contacts:contacts.filter(c=>c.role===filter);
+  $('contacts-tbody').innerHTML=filtered.map(c=>{
+    const store=getStore(c.storeId);
+    return`<tr style="cursor:pointer" onclick="openContactDrawer('${c.id}')">
+      <td><div class="entity-name">${c.name}</div></td>
+      <td><span class="pill ${c.role==='Buyer'?'pill-blue':c.role==='Store Manager'?'pill-green':'pill-stone'}">${c.role}</span></td>
+      <td style="font-size:12px">${store?.name||''}</td>
+      <td style="font-size:12px;color:var(--blue)">${c.email}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px">${c.phone}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--stone-400)">${c.lastContact}</td>
+      <td>${influencePill(c.influence)}</td>
+      <td style="font-size:12px;color:var(--stone-400);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.notes}</td></tr>`;
+  }).join('');
+}
+window._buildContacts=buildContacts;
+
+// ══════════════════════════════════════════════════════════════════════════════
+// REPS
+// ══════════════════════════════════════════════════════════════════════════════
+// Rep colours used consistently across comparison charts/tables
+const REP_COLORS = { r1:'#2e7a19', r2:'#185FA5', r3:'#c87d1a' };
+
+function buildReps(){
+  // ── Rep cards ────────────────────────────────────────────────────────────
+  $('reps-grid').innerHTML=reps.map(r=>{
+    const repStores=stores.filter(s=>r.storeIds.includes(s.id));
+    const repBrands=brands.filter(b=>r.brandIds.includes(b.id));
+    const repSampleROV=(()=>{
+      const rs=samples.filter(s=>s.repId===r.id);
+      const cost=rs.reduce((a,x)=>a+x.cost,0);
+      const rev=rs.reduce((a,x)=>a+x.revenueGen,0);
+      return cost>0?(rev/cost).toFixed(1)+'x':'—';
+    })();
+    return`<div class="card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <div class="rep-avatar" style="width:44px;height:44px;font-size:16px;background:${REP_COLORS[r.id]||'var(--green-600)'}">${r.initials}</div>
+        <div><div class="entity-name" style="font-size:15px">${r.name}</div><div class="entity-sub">${r.territory}</div></div>
+      </div>
+      <div class="stat-cluster" style="margin-bottom:16px">
+        <div class="stat-item"><div class="stat-val">${fmtK(r.revenue30d)}</div><div class="stat-key">Revenue/30d</div></div>
+        <div class="stat-item"><div class="stat-val">${r.units30d.toLocaleString()}</div><div class="stat-key">Units/30d</div></div>
+        <div class="stat-item"><div class="stat-val">${r.visits30d}</div><div class="stat-key">Visits</div></div>
+        <div class="stat-item"><div class="stat-val">${r.samplesOut}</div><div class="stat-key">Samples</div></div>
+        <div class="stat-item"><div class="stat-val">${repSampleROV}</div><div class="stat-key">ROV</div></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--stone-400);margin-bottom:6px">Stores</div>
+      ${repStores.map(s=>`<div style="font-size:12px;padding:4px 0;border-bottom:1px solid var(--stone-50);color:var(--stone-700)">${s.name}</div>`).join('')}
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--stone-400);margin:10px 0 6px">Brands</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${repBrands.map(b=>`<span style="background:${b.color}22;color:${b.color};font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px">${b.name}</span>`).join('')}</div>
+    </div>`;
+  }).join('');
+
+  // ── Rep × Category chart ─────────────────────────────────────────────────
+  // Build: for each rep, sum revenue (or units) per category
+  const allCats = [...new Set(brands.map(b=>b.category))];
+  const catDatasets = reps.map(r => {
+    const repBrands = brands.filter(b => b.repId === r.id);
+    return {
+      label: r.name.split(' ')[0],
+      data: allCats.map(cat => {
+        const catBrands = repBrands.filter(b => b.category === cat);
+        return unitMode
+          ? catBrands.reduce((s,b)=>s+b.units30d,0)
+          : catBrands.reduce((s,b)=>s+b.revenue30d,0);
+      }),
+      backgroundColor: REP_COLORS[r.id]||'#888',
+      borderRadius: 3,
+    };
+  });
+  // Only show categories where at least one rep has data
+  const activeCatIdxs = allCats.map((c,i)=>i).filter(i=>catDatasets.some(d=>d.data[i]>0));
+  const filteredCats = activeCatIdxs.map(i=>allCats[i]);
+  const filteredDatasets = catDatasets.map(d=>({...d,data:activeCatIdxs.map(i=>d.data[i])}));
+
+  safeChart('chart-rep-category', {
+    type: 'bar',
+    data: { labels: filteredCats.map(c=>c.length>18?c.substring(0,16)+'…':c), datasets: filteredDatasets },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'top', labels:{font:{size:11},boxWidth:14} },
+        tooltip:{ callbacks:{ label: ctx => ctx.dataset.label+': '+(unitMode?ctx.raw.toLocaleString()+' units':'$'+(ctx.raw/1000).toFixed(1)+'K') }}},
+      scales:{
+        x:{ grid:{display:false}, ticks:{font:{size:9},maxRotation:35} },
+        y:{ grid:{color:'#f0f0ec'}, ticks:{font:{size:10}, callback:v=>unitMode?v.toLocaleString():'$'+(v/1000).toFixed(0)+'K'} }
+      }
+    }
+  });
+
+  // ── Rep × Brand chart (horizontal bar, top 8 brands by total revenue) ──
+  const topBrands = [...brands].sort((a,b)=>b.revenue30d-a.revenue30d).slice(0,8);
+  const brandDatasets = reps.map(r => ({
+    label: r.name.split(' ')[0],
+    data: topBrands.map(b => b.repId===r.id ? (unitMode?b.units30d:b.revenue30d) : 0),
+    backgroundColor: REP_COLORS[r.id]||'#888',
+    borderRadius: 3,
+  }));
+  safeChart('chart-rep-brand', {
+    type: 'bar',
+    data: { labels: topBrands.map(b=>b.name.split(' ').slice(0,2).join(' ')), datasets: brandDatasets },
+    options: {
+      responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      plugins:{ legend:{ position:'top', labels:{font:{size:11},boxWidth:14} },
+        tooltip:{ callbacks:{ label: ctx => ctx.dataset.label+': '+(unitMode?ctx.raw.toLocaleString()+' units':'$'+(ctx.raw/1000).toFixed(1)+'K') }}},
+      scales:{
+        x:{ grid:{color:'#f0f0ec'}, ticks:{font:{size:10}, callback:v=>unitMode?v.toLocaleString():'$'+(v/1000).toFixed(0)+'K'} },
+        y:{ grid:{display:false}, ticks:{font:{size:10}} }
+      }
+    }
+  });
+
+  // ── Rep × Brand table ────────────────────────────────────────────────────
+  const totalRev = brands.reduce((s,b)=>s+b.revenue30d,0);
+  const totalUnits = brands.reduce((s,b)=>s+b.units30d,0);
+  const repTotals = reps.map(r=>({
+    rev: brands.filter(b=>b.repId===r.id).reduce((s,b)=>s+b.revenue30d,0),
+    units: brands.filter(b=>b.repId===r.id).reduce((s,b)=>s+b.units30d,0),
+  }));
+
+  $('rep-brand-table').innerHTML = `<table>
+    <thead>
+      <tr>
+        <th>Brand</th>
+        <th>Category</th>
+        ${reps.map((r,i)=>`<th><div style="display:flex;align-items:center;gap:6px"><div class="rep-avatar" style="width:20px;height:20px;font-size:9px;background:${REP_COLORS[r.id]}">${r.initials}</div>${r.name.split(' ')[0]}</div></th>`).join('')}
+        <th>Total</th>
+        <th>Share</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${[...brands].sort((a,b)=>b.revenue30d-a.revenue30d).map(b=>{
+        const val = unitMode ? b.units30d : b.revenue30d;
+        const total = unitMode ? totalUnits : totalRev;
+        const share = Math.round(val/total*100);
+        return `<tr>
+          <td><div style="display:flex;align-items:center;gap:8px">
+            <div class="entity-avatar" style="width:22px;height:22px;border-radius:5px;font-size:9px;background:${b.color}">${b.logo}</div>
+            <div class="entity-name" style="font-size:12px">${b.name}</div>
+          </div></td>
+          <td><span class="pill pill-stone" style="font-size:10px">${b.category}</span></td>
+          ${reps.map(r=>{
+            const isOwner = b.repId===r.id;
+            return `<td style="font-family:'DM Mono',monospace;font-size:12px;${isOwner?'font-weight:700;color:'+REP_COLORS[r.id]:'color:var(--stone-300)'}">
+              ${isOwner?(unitMode?b.units30d.toLocaleString():fmtK(b.revenue30d)):'—'}
+            </td>`;
+          }).join('')}
+          <td style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700">${unitMode?b.units30d.toLocaleString():fmtK(b.revenue30d)}</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:50px;height:5px;background:var(--stone-100);border-radius:3px;overflow:hidden">
+              <div style="width:${share}%;height:100%;background:${b.color};border-radius:3px"></div>
+            </div>
+            <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--stone-400)">${share}%</span>
+          </div></td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+    <tfoot>
+      <tr style="border-top:2px solid var(--stone-100)">
+        <td colspan="2" style="font-weight:700;font-size:12px;padding-top:10px">Total</td>
+        ${repTotals.map(t=>`<td style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;padding-top:10px">${unitMode?t.units.toLocaleString():fmtK(t.rev)}</td>`).join('')}
+        <td style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;padding-top:10px">${unitMode?totalUnits.toLocaleString():fmtK(totalRev)}</td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>`;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SALES & REVENUE
+// ══════════════════════════════════════════════════════════════════════════════
+function buildSales(){
+  const topSku=skus.reduce((a,b)=>a.unitsWk>b.unitsWk?a:b);
+  const slow=skus.filter(s=>s.trend<=-20).length;
+  const avgRev=Math.round(brands.reduce((s,b)=>s+b.revenue30d,0)/skus.length);
+  $('sales-metrics').innerHTML=`
+    <div class="metric-card"><div class="metric-label">Top SKU/wk</div><div class="metric-val">${topSku.unitsWk}</div><div class="metric-sub">${topSku.name.substring(0,25)}</div></div>
+    <div class="metric-card"><div class="metric-label">Slow Movers</div><div class="metric-val">${slow}</div><div class="metric-sub"><span class="metric-down">↓ flagged</span></div></div>
+    <div class="metric-card"><div class="metric-label">Avg Rev/SKU</div><div class="metric-val">${fmtK(avgRev)}</div><div class="metric-sub">per active SKU/30d</div></div>
+    <div class="metric-card"><div class="metric-label">Total SKUs</div><div class="metric-val">${skus.length}</div><div class="metric-sub">across ${brands.length} brands</div></div>`;
+
+  const catMap={};skus.forEach(s=>{catMap[s.category]=(catMap[s.category]||0)+s.unitsWk;});
+  const catLabels=Object.keys(catMap);const catData=Object.values(catMap);
+  safeChart('chart-category',{type:'doughnut',data:{labels:catLabels,datasets:[{data:catData,backgroundColor:['#2e7a19','#185FA5','#E63946','#F97316','#6B21A8','#059669','#854F0B']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11}}}}}});
+
+  const topSkus=[...skus].sort((a,b)=>b.unitsWk-a.unitsWk).slice(0,8);
+  safeChart('chart-velocity',{type:'bar',data:{labels:topSkus.map(s=>s.name.substring(0,18)),datasets:[{data:topSkus.map(s=>s.unitsWk),backgroundColor:topSkus.map(s=>getBrand(s.brandId)?.color||'#888')}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#f0f0ec'},ticks:{font:{size:10}}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+
+  $('skus-tbody').innerHTML=skus.sort((a,b)=>b.unitsWk-a.unitsWk).map((s,i)=>{
+    const brand=getBrand(s.brandId);const rp=reorderPct(s);const rc=reorderColor(rp);
+    return`<tr><td class="rank-badge">${i+1}</td><td><div class="entity-name">${s.name}</div></td>
+    <td><div style="display:flex;align-items:center;gap:6px"><div class="entity-avatar" style="width:20px;height:20px;border-radius:4px;font-size:9px;background:${brand?.color||'#555'}">${brand?.logo||'?'}</div>${brand?.name||''}</div></td>
+    <td><span class="pill pill-stone">${s.category}</span></td>
+    <td style="font-family:'DM Mono',monospace">$${s.price.toFixed(2)}</td><td><strong>${s.unitsWk}</strong></td><td>${s.storeCount}</td><td>${trendHtml(s.trend)}</td>
+    <td><div style="display:flex;align-items:center;gap:6px"><div style="width:60px;height:6px;background:var(--stone-100);border-radius:3px;overflow:hidden"><div style="width:${rp}%;height:100%;background:${rc};border-radius:3px"></div></div><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--stone-400)">${rp}%</span></div></td></tr>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SAMPLES & ROV
+// ══════════════════════════════════════════════════════════════════════════════
+function buildSamples(){
+  const totalCost=samples.reduce((s,x)=>s+x.cost,0);
+  const totalRevGen=samples.reduce((s,x)=>s+x.revenueGen,0);
+  const overallROV=totalCost>0?(totalRevGen/totalCost).toFixed(1):0;
+  const reordered=samples.filter(s=>s.status==='reordered').length;
+  const pending=samples.filter(s=>s.status==='pending').length;
+  $('sample-metrics').innerHTML=`
+    <div class="metric-card"><div class="metric-label">Total Sample Cost</div><div class="metric-val">${fmt$(totalCost)}</div><div class="metric-sub">${samples.length} samples out</div></div>
+    <div class="metric-card"><div class="metric-label">Revenue Generated</div><div class="metric-val">${fmtK(totalRevGen)}</div><div class="metric-sub">from converted samples</div></div>
+    <div class="metric-card"><div class="metric-label">Overall ROV <span data-tip="ROV = Revenue on Value. Total revenue generated divided by total sample cost. Measures how effectively samples drive reorders. Industry benchmark: 4x. Excellent: 8x+." style="cursor:help;color:var(--stone-400);font-size:10px;font-weight:700;border:1px solid var(--stone-300);border-radius:3px;padding:0 4px">?</span></div><div class="metric-val">${overallROV}x</div><div class="metric-sub">revenue per $1 sample cost</div></div>
+    <div class="metric-card"><div class="metric-label">Conversion Rate</div><div class="metric-val">${Math.round(reordered/samples.length*100)}%</div><div class="metric-sub">${reordered} reordered / ${pending} pending</div></div>`;
+
+  const brandROV={};brands.forEach(b=>{
+    const bs=samples.filter(s=>s.brandId===b.id);
+    const cost=bs.reduce((s,x)=>s+x.cost,0);
+    const rev=bs.reduce((s,x)=>s+x.revenueGen,0);
+    brandROV[b.id]={cost,rev,rov:cost>0?(rev/cost).toFixed(1):0,name:b.name,color:b.color,logo:b.logo};
+  });
+  const maxROV=Math.max(...Object.values(brandROV).map(v=>parseFloat(v.rov)||0),1);
+  $('rov-bars').innerHTML=Object.values(brandROV).sort((a,b)=>parseFloat(b.rov)-parseFloat(a.rov)).map(v=>`<div class="prog-row"><div class="prog-label" style="display:flex;align-items:center;gap:6px"><div class="entity-avatar" style="width:20px;height:20px;border-radius:4px;font-size:9px;background:${v.color}">${v.logo}</div>${v.name}</div><div class="prog-track"><div class="prog-fill" style="width:${Math.round(parseFloat(v.rov)/maxROV*100)}%;background:${v.color}"></div></div><div class="prog-val">${v.rov}x</div></div>`).join('');
+
+  const statuses=['reordered','pending','expired','not_converted'];
+  const statusCounts=statuses.map(s=>samples.filter(x=>x.status===s).length);
+  safeChart('chart-funnel',{type:'bar',data:{labels:['Reordered','Pending','Expired','No Convert'],datasets:[{data:statusCounts,backgroundColor:['#2e7a19','#c87d1a','#b83030','#586050']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#f0f0ec'}},x:{grid:{display:false}}}}});
+
+  $('samples-tbody').innerHTML=samples.map(s=>{
+    const sku=getSku(s.skuId);const brand=getBrand(s.brandId);const store=getStore(s.storeId);const rep=getRep(s.repId);
+    const rov=s.cost>0&&s.revenueGen>0?(s.revenueGen/s.cost).toFixed(1)+'x':'—';
+    return`<tr><td><div class="entity-name">${sku?.name||''}</div></td>
+    <td><div style="display:flex;align-items:center;gap:6px"><div class="entity-avatar" style="width:20px;height:20px;border-radius:4px;font-size:9px;background:${brand?.color||'#555'}">${brand?.logo||'?'}</div>${brand?.name||''}</div></td>
+    <td style="font-size:12px">${store?.name||''}</td>
+    <td><div style="display:flex;align-items:center;gap:4px"><div class="rep-avatar" style="width:22px;height:22px;font-size:9px">${rep?.initials||'?'}</div><span style="font-size:12px;color:var(--stone-500)">${rep?.name||''}</span></div></td>
+    <td style="font-family:'DM Mono',monospace;font-size:12px">${s.dateOut}</td>
+    <td style="font-family:'DM Mono',monospace">$${s.cost}</td>
+    <td style="font-family:'DM Mono',monospace;font-weight:700;color:${s.revenueGen>0?'var(--green-600)':'var(--stone-400)'}">${s.revenueGen>0?fmt$(s.revenueGen):'—'}</td>
+    <td style="font-family:'DM Mono',monospace;font-weight:700;color:${parseFloat(rov)>=5?'var(--green-600)':'var(--stone-500)'}" data-tip="ROV = Revenue on Value. Revenue generated per $1 of sample cost. Target: 5x+. Excellent: 10x+. '—' means sample not yet converted.">${rov}</td>
+    <td>${s.status==='pending'
+      ? `<div style="display:flex;flex-direction:column;gap:4px">${samplePill(s.status)}<div style="display:flex;gap:4px"><button onclick="updateSampleStatus('${s.id}','reordered')" style="font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--green-400);background:var(--green-50);color:var(--green-700);cursor:pointer;font-weight:700">✓ Reorder</button><button onclick="updateSampleStatus('${s.id}','not_converted')" style="font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--stone-200);background:var(--stone-50);color:var(--stone-500);cursor:pointer;font-weight:700">✕ No Convert</button></div></div>`
+      : samplePill(s.status)}</td></tr>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DISTRIBUTION
+// ══════════════════════════════════════════════════════════════════════════════
+function buildDistribution(){
+  let totalPlacements=0,oosCount=0;
+  stores.forEach(s=>{brands.forEach(b=>{const v=stockMatrix[s.id]?.[b.id]??0;if(v>0)totalPlacements++;else oosCount++;});});
+  $('dist-metrics').innerHTML=`
+    <div class="metric-card"><div class="metric-label">Total Placements</div><div class="metric-val">${totalPlacements}</div><div class="metric-sub">brand×store combinations</div></div>
+    <div class="metric-card"><div class="metric-label">OOS Gaps</div><div class="metric-val">${oosCount}</div><div class="metric-sub"><span class="metric-down">opportunities</span></div></div>
+    <div class="metric-card"><div class="metric-label">Avg SKU Depth</div><div class="metric-val">${(totalPlacements>0?(stores.reduce((s,st)=>s+brands.reduce((a,b)=>a+(stockMatrix[st.id]?.[b.id]??0),0),0)/totalPlacements).toFixed(1):0)}</div><div class="metric-sub">SKUs per placement</div></div>
+    <div class="metric-card"><div class="metric-label">Coverage Rate</div><div class="metric-val">${Math.round(totalPlacements/(stores.length*brands.length)*100)}%</div><div class="metric-sub">of possible placements</div></div>`;
+
+  const cellPill=n=>{if(n===0)return'<span class="pill pill-red">OOS</span>';if(n===1)return'<span class="pill pill-amber">'+n+'</span>';return'<span class="pill pill-green">'+n+'</span>';};
+  $('matrix-wrap').innerHTML=`<table><thead><tr><th>Store</th>${brands.map(b=>`<th><div style="display:flex;align-items:center;gap:4px"><div class="entity-avatar" style="width:18px;height:18px;border-radius:3px;font-size:8px;background:${b.color}">${b.logo}</div><span style="font-size:10px">${b.name.split(' ')[0]}</span></div></th>`).join('')}</tr></thead><tbody>${stores.map(s=>`<tr><td><div class="entity-name" style="font-size:12px">${s.name}</div><div class="entity-sub">${s.city}</div></td>${brands.map(b=>`<td>${cellPill(stockMatrix[s.id]?.[b.id]??0)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SHELF SHARE
+// ══════════════════════════════════════════════════════════════════════════════
+function buildShelf(region='all'){
+  const regions=['all',...Object.keys(shelfShareData)];
+  $('shelf-filters').innerHTML=regions.map(r=>`<button class="filter-chip ${r===region?'active':''}" onclick="window._buildShelf('${r}')">${r==='all'?'All Regions':r}</button>`).join('');
+
+  let data;
+  if(region==='all'){
+    data={ours:0,competitor1:0,competitor2:0,competitor3:0,other:0};
+    const keys=Object.keys(shelfShareData);
+    keys.forEach(k=>{Object.keys(data).forEach(dk=>{data[dk]+=shelfShareData[k][dk];});});
+    Object.keys(data).forEach(k=>{data[k]=Math.round(data[k]/keys.length);});
+  }else{data={...shelfShareData[region]};}
+
+  $('shelf-metrics').innerHTML=`
+    <div class="metric-card"><div class="metric-label">Our Share</div><div class="metric-val" style="color:var(--green-600)">${data.ours}%</div><div class="metric-sub">portfolio brands</div></div>
+    <div class="metric-card"><div class="metric-label">${shelfCompetitors.competitor1}</div><div class="metric-val">${data.competitor1}%</div><div class="metric-sub">primary competitor</div></div>
+    <div class="metric-card"><div class="metric-label">${shelfCompetitors.competitor2}</div><div class="metric-val">${data.competitor2}%</div><div class="metric-sub">secondary</div></div>
+    <div class="metric-card"><div class="metric-label">${shelfCompetitors.competitor3}</div><div class="metric-val">${data.competitor3}%</div><div class="metric-sub">tertiary</div></div>`;
+
+  const colors=['#2e7a19','#185FA5','#E63946','#6B21A8','#cdd5c5'];
+  const labels=['Our Portfolio',shelfCompetitors.competitor1,shelfCompetitors.competitor2,shelfCompetitors.competitor3,'Other'];
+  const storeShelf={};
+  stores.forEach(s=>{
+    if(region!=='all'&&s.region!==region)return;
+    const ourSKUs=s.brandIds.length;const total=ourSKUs+5;
+    storeShelf[s.id]={name:s.name,ours:Math.round(ourSKUs/total*100),comp:Math.round(5/total*100)};
+  });
+  $('shelf-store-bars').innerHTML=Object.values(storeShelf).map(s=>`<div class="prog-row"><div class="prog-label">${s.name}</div><div class="prog-track" style="height:14px"><div class="prog-fill" style="width:${s.ours}%;background:var(--green-500)"></div></div><div class="prog-val">${s.ours}%</div></div>`).join('');
+
+  const regionChart=$('chart-shelf-region');
+  if(regionChart._chart)regionChart._chart.destroy();
+  regionChart._chart=new Chart(regionChart,{type:'bar',data:{labels:Object.keys(shelfShareData),datasets:labels.map((l,i)=>({label:l,data:Object.values(shelfShareData).map(v=>[v.ours,v.competitor1,v.competitor2,v.competitor3,v.other][i]),backgroundColor:colors[i]}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10}}}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,max:100,ticks:{callback:v=>v+'%'}}}}});
+
+  const catShare={Flower:42,Preroll:28,Vape:15,Edible:10,Concentrate:5};
+  const catChart=$('chart-shelf-cat');
+  if(catChart._chart)catChart._chart.destroy();
+  catChart._chart=new Chart(catChart,{type:'doughnut',data:{labels:Object.keys(catShare),datasets:[{data:Object.values(catShare),backgroundColor:['#2e7a19','#E63946','#185FA5','#059669','#6B21A8']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11}}}}}});
+}
+window._buildShelf=buildShelf;
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PROMO CALENDAR
+// ══════════════════════════════════════════════════════════════════════════════
+function buildPromos(){
+  const active=promos.filter(p=>p.status==='active').length;
+  const totalBudget=promos.reduce((s,p)=>s+p.budget,0);
+  const avgLift=Math.round(promos.filter(p=>p.actualLift!==null).reduce((s,p)=>s+p.actualLift,0)/Math.max(promos.filter(p=>p.actualLift!==null).length,1));
+  $('promo-metrics').innerHTML=`
+    <div class="metric-card"><div class="metric-label">Active Promos</div><div class="metric-val">${active}</div><div class="metric-sub">running now</div></div>
+    <div class="metric-card"><div class="metric-label">Total Budget</div><div class="metric-val">${fmtK(totalBudget)}</div><div class="metric-sub">Q1 allocated</div></div>
+    <div class="metric-card"><div class="metric-label">Avg Actual Lift</div><div class="metric-val">${avgLift}%</div><div class="metric-sub">revenue increase</div></div>
+    <div class="metric-card"><div class="metric-label">Planned</div><div class="metric-val">${promos.filter(p=>p.status==='planned').length}</div><div class="metric-sub">upcoming promos</div></div>`;
+
+  $('promos-tbody').innerHTML=promos.map(p=>{
+    const brand=getBrand(p.brandId);
+    return`<tr>
+      <td><div class="entity-name">${p.name}</div></td>
+      <td><div style="display:flex;align-items:center;gap:6px"><div class="entity-avatar" style="width:20px;height:20px;border-radius:4px;font-size:9px;background:${brand?.color||'#555'}">${brand?.logo||'?'}</div>${brand?.name||''}</div></td>
+      <td><span class="pill pill-stone">${p.type}</span></td>
+      <td>${p.storeIds.length} stores</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px">${p.start}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px">${p.end}</td>
+      <td style="font-family:'DM Mono',monospace">${fmt$(p.budget)}</td>
+      <td><span class="trend-up">↑ ${p.expectedLift}%</span></td>
+      <td>${p.actualLift!==null?`<span class="trend-up">↑ ${p.actualLift}%</span>`:'<span class="trend-flat">—</span>'}</td>
+      <td>${promoPill(p.status)}</td></tr>`;
+  }).join('');
+
+  // Calendar grid for March 2026
+  const daysInMonth=31;const firstDow=new Date(2026,2,1).getDay();
+  const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let html='<div class="calendar-grid">';
+  dayNames.forEach(d=>{html+=`<div class="cal-header">${d}</div>`;});
+  for(let i=0;i<firstDow;i++)html+='<div class="cal-day" style="background:var(--stone-50)"></div>';
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr=`2026-03-${String(d).padStart(2,'0')}`;
+    const dayPromos=promos.filter(p=>dateStr>=p.start&&dateStr<=p.end);
+    html+=`<div class="cal-day"><div class="cal-day-num">${d}</div>`;
+    dayPromos.forEach(p=>{
+      const brand=getBrand(p.brandId);
+      html+=`<div class="cal-event" style="background:${brand?.color||'#888'}22;color:${brand?.color||'#888'}" title="${p.name}">${brand?.name?.split(' ')[0]||''}</div>`;
+    });
+    html+='</div>';
+  }
+  html+='</div>';
+  $('promo-calendar').innerHTML=html;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DRAWERS
+// ══════════════════════════════════════════════════════════════════════════════
+window.openBrandDrawer=id=>{
+  const b=getBrand(id);if(!b)return;
+  const rep=getRep(b.repId);const chg=Math.round((b.revenue30d-b.revenuePrev)/b.revenuePrev*100);
+  const brandSkus=skus.filter(s=>s.brandId===id);
+  const brandStores=stores.filter(s=>s.brandIds.includes(id));
+  const brandSamples=samples.filter(s=>s.brandId===id);
+  const sCost=brandSamples.reduce((s,x)=>s+x.cost,0);
+  const sRev=brandSamples.reduce((s,x)=>s+x.revenueGen,0);
+  const brandROV=sCost>0?(sRev/sCost).toFixed(1)+'x':'—';
+
+  $('drawer-title').innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;width:100%"><div style="display:flex;align-items:center;gap:10px"><div class="entity-avatar" style="background:${b.color}">${b.logo}</div>${b.name}</div><button class="btn btn-outline btn-sm" onclick="openBrandForm('${id}')">Edit</button></div>`;
+  $('drawer-body').innerHTML=`
+    <div class="drawer-section"><div class="drawer-section-title">Overview</div>
+      <div class="detail-row"><span class="detail-key">Category</span><span class="detail-val">${b.category}</span></div>
+      <div class="detail-row"><span class="detail-key">Province</span><span class="detail-val">${b.province}</span></div>
+      <div class="detail-row"><span class="detail-key">Rep</span><span class="detail-val">${rep?.name||'—'}</span></div>
+      <div class="detail-row"><span class="detail-key">Status</span><span class="detail-val">${statusPill(b.status)}</span></div></div>
+    <div class="drawer-section"><div class="drawer-section-title">Revenue</div>
+      <div class="detail-row"><span class="detail-key">Revenue (30d)</span><span class="detail-val">${fmt$(b.revenue30d)}</span></div>
+      <div class="detail-row"><span class="detail-key">vs Prior</span><span class="detail-val">${trendHtml(chg)}</span></div>
+      <div class="detail-row"><span class="detail-key">Units (30d)</span><span class="detail-val">${b.units30d.toLocaleString()}</span></div>
+      <div class="detail-row"><span class="detail-key">Active Stores</span><span class="detail-val">${b.activeStores}</span></div>
+      <div class="detail-row"><span class="detail-key">Sample ROV</span><span class="detail-val" style="color:var(--green-600)">${brandROV}</span></div></div>
+    <div class="drawer-section"><div class="drawer-section-title">SKUs (${brandSkus.length})</div>
+      ${brandSkus.map(s=>`<div class="detail-row"><span class="detail-key" style="max-width:200px">${s.name}</span><span class="detail-val" style="display:flex;gap:8px;align-items:center">${trendHtml(s.trend)}<span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--stone-400)">${s.unitsWk}/wk</span></span></div>`).join('')}</div>
+    <div class="drawer-section"><div class="drawer-section-title">In Stores (${brandStores.length})</div>
+      ${brandStores.map(s=>`<div class="detail-row"><span class="detail-key">${s.name}</span><span class="detail-val">${s.city}</span></div>`).join('')}</div>
+    <div class="drawer-section"><div class="drawer-section-title">Samples (${brandSamples.length})</div>
+      ${brandSamples.map(s=>{const store=getStore(s.storeId);return`<div class="detail-row"><span class="detail-key">${store?.name||'—'}</span><span class="detail-val" style="display:flex;gap:8px">${samplePill(s.status)}<span style="font-family:'DM Mono',monospace;font-size:11px">$${s.cost}</span></span></div>`;}).join('')}</div>
+    ${noteSection('brand_'+id)}`;
+  openDrawer();
+};
+
+window.openStoreDrawer=id=>{
+  const s=getStore(id);if(!s)return;
+  const rep=getRep(s.rep);const p=calcPriority(s);
+  const storeBrands=brands.filter(b=>s.brandIds.includes(b.id));
+  const storeSamples=samples.filter(smp=>smp.storeId===id);
+  const storeContacts=contacts.filter(c=>c.storeId===id);
+  const cls=p.score>=30?'priority-high':p.score>=18?'priority-med':'priority-low';
+
+  $('drawer-title').innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;width:100%"><div><div>${s.name}</div><div style="font-size:12px;font-weight:400;color:var(--stone-400)">${s.chain} · ${s.city}</div></div><button class="btn btn-outline btn-sm" onclick="openStoreForm('${id}')">Edit</button></div>`;
+  $('drawer-body').innerHTML=`
+    <div class="drawer-section"><div class="drawer-section-title">Visit Priority</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><div class="priority-score ${cls}">${p.score}</div><div><div style="font-weight:700">${p.score>=30?'Urgent':p.score>=18?'Due Soon':'Low Priority'}</div><div style="font-size:12px;color:var(--stone-400)">${p.daysAgo}d since visit · ${p.stockDays}d stock · ${p.pendingSamples} pending</div></div></div></div>
+    <div class="drawer-section"><div class="drawer-section-title">Store Info</div>
+      <div class="detail-row"><span class="detail-key">Chain</span><span class="detail-val">${s.chain}</span></div>
+      <div class="detail-row"><span class="detail-key">Region</span><span class="detail-val">${s.region}</span></div>
+      <div class="detail-row"><span class="detail-key">Tier</span><span class="detail-val">${tierPill(s.tier)}</span></div>
+      <div class="detail-row"><span class="detail-key">Status</span><span class="detail-val">${statusPill(s.status)}</span></div>
+      <div class="detail-row"><span class="detail-key">Rep</span><span class="detail-val">${rep?.name||'—'}</span></div>
+      <div class="detail-row"><span class="detail-key">Last Visit</span><span class="detail-val" style="font-family:'DM Mono',monospace;font-size:12px">${s.lastVisit}</span></div></div>
+    <div class="drawer-section"><div class="drawer-section-title">Sales</div>
+      <div class="detail-row"><span class="detail-key">Revenue (30d)</span><span class="detail-val">${fmt$(s.revenue30d)}</span></div>
+      <div class="detail-row"><span class="detail-key">Units (30d)</span><span class="detail-val">${s.units30d.toLocaleString()}</span></div>
+      <div class="detail-row"><span class="detail-key">SKUs in Stock</span><span class="detail-val">${s.skus}</span></div></div>
+    <div class="drawer-section"><div class="drawer-section-title">Contacts (${storeContacts.length})</div>
+      ${storeContacts.map(c=>`<div class="detail-row"><span class="detail-key"><strong>${c.name}</strong><br><span style="font-size:11px">${c.role}</span></span><span class="detail-val">${influencePill(c.influence)}</span></div>`).join('')}</div>
+    <div class="drawer-section"><div class="drawer-section-title">Brands (${storeBrands.length})</div>
+      ${storeBrands.map(b=>`<div class="detail-row"><span class="detail-key" style="display:flex;align-items:center;gap:6px"><div class="entity-avatar" style="width:18px;height:18px;border-radius:3px;font-size:8px;background:${b.color}">${b.logo}</div>${b.name}</span><span class="detail-val">${statusPill(b.status)}</span></div>`).join('')}</div>
+    <div class="drawer-section"><div class="drawer-section-title">Samples (${storeSamples.length})</div>
+      ${storeSamples.length?storeSamples.map(smp=>{const sku=getSku(smp.skuId);return`<div class="detail-row"><span class="detail-key">${sku?.name||'—'}</span><span class="detail-val" style="display:flex;gap:8px">${samplePill(smp.status)}<span style="font-family:'DM Mono',monospace;font-size:11px">$${smp.cost}</span></span></div>`;}).join(''):'<div style="font-size:12px;color:var(--stone-400);padding:4px 0">No samples logged</div>'}</div>
+    ${noteSection('store_'+id)}`;
+  openDrawer();
+};
+
+function openDrawer(){$('detail-drawer').classList.add('open');$('drawer-overlay').classList.add('open');}
+function closeDrawer(){$('detail-drawer').classList.remove('open');$('drawer-overlay').classList.remove('open');}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// GLOBAL SEARCH
+// ══════════════════════════════════════════════════════════════════════════════
+$('globalSearch').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase().trim();
+  const el = $('search-results');
+  if (!q) { el.style.display='none'; return; }
+
+  const results = [];
+  brands.filter(b  => b.name.toLowerCase().includes(q)).forEach(b =>
+    results.push({type:'Brand',   label:b.name,    sub:b.category,               color:b.color, logo:b.logo,  action:`openBrandDrawer('${b.id}')`}));
+  stores.filter(s  => s.name.toLowerCase().includes(q)||s.chain.toLowerCase().includes(q)).forEach(s =>
+    results.push({type:'Store',   label:s.name,    sub:s.chain+' · '+s.city,     color:null,    logo:null,    action:`openStoreDrawer('${s.id}')`}));
+  contacts.filter(c => c.name.toLowerCase().includes(q)).forEach(c => {
+    const st = getStore(c.storeId);
+    results.push({type:'Contact', label:c.name,    sub:c.role+' · '+(st?.name||''), color:null, logo:null,   action:`openContactDrawer('${c.id}')`});
+  });
+  skus.filter(s    => s.name.toLowerCase().includes(q)).forEach(s => {
+    const b = getBrand(s.brandId);
+    results.push({type:'SKU',     label:s.name,    sub:(b?.name||'')+' · $'+s.price.toFixed(2), color:b?.color||null, logo:b?.logo||null, action:`document.querySelector('[data-page="sales"]').click()`});
+  });
+  reps.filter(r    => r.name.toLowerCase().includes(q)).forEach(r =>
+    results.push({type:'Rep',     label:r.name,    sub:r.territory,              color:null,    logo:null,    action:`document.querySelector('[data-page="reps"]').click()`}));
+
+  const typeIcons = {Brand:'B', Store:'S', Contact:'C', SKU:'K', Rep:'R'};
+  el.innerHTML = results.length
+    ? results.slice(0,9).map(r => `
+        <div onclick="${r.action};$('search-results').style.display='none';$('globalSearch').value=''" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;border-bottom:1px solid var(--stone-50)" onmouseover="this.style.background='var(--stone-50)'" onmouseout="this.style.background=''">
+          ${r.color
+            ? `<div class="entity-avatar" style="width:28px;height:28px;border-radius:6px;font-size:11px;background:${r.color};flex-shrink:0">${r.logo}</div>`
+            : `<div style="width:28px;height:28px;border-radius:6px;background:var(--stone-100);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--stone-500);flex-shrink:0">${typeIcons[r.type]||'?'}</div>`}
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:700;color:var(--stone-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.label}</div>
+            <div style="font-size:11px;color:var(--stone-400)">${r.sub}</div>
+          </div>
+          <span style="font-size:10px;font-weight:700;color:var(--stone-400);flex-shrink:0;background:var(--stone-100);padding:2px 6px;border-radius:4px">${r.type}</span>
+        </div>`).join('')
+    : '<div style="padding:14px 16px;font-size:12px;color:var(--stone-400)">No results for "'+e.target.value+'"</div>';
+  el.style.display = 'block';
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.header-center')) $('search-results').style.display = 'none';
+});
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════════════════
+buildDashboard();
+buildStrategy();
+buildRoute();
+buildBrands();
+buildStores();
+buildContacts();
+buildReps();
+buildSales();
+buildSamples();
+buildDistribution();
+buildShelf();
+buildPromos();
+</script>
+</body>
+</html>

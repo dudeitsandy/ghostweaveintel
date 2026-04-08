@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Client data — real sales data, never commit
+*.xlsx
+*.xls
+*.csv
+
+# Build artifacts
+*.zip
+canopycrm-mvp.zip
+
+# Internal docs
+*.docx
+*.doc
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.local
+.env*.local
