@@ -1,6 +1,11 @@
 # Dependencies
 node_modules/
 
+# Research Files
+research/
+Context/
+testdata/
+
 # Client data — real sales data, never commit
 *.xlsx
 *.xls
